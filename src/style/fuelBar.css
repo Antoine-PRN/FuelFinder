@@ -1,0 +1,17 @@
+.fuel-item {
+  padding: 5px;
+  margin: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fuel-item:hover {
+  background: rgba(144, 144, 144, 0.4);
+}
+
+img {
+  width: 40px;
+  height: 40px;
+}

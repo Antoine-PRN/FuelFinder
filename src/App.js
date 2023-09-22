@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Finder from "./components/Finder";
 import MapComponent from "./components/Map";
-import "./styles.css";
-import "./loader.css"
+import "./style/styles.css";
+import "./style/loader.css"
 import { MapContainer } from "react-leaflet";
 import Fuels from "./components/Fuels";
 
@@ -12,6 +12,7 @@ export default function App() {
   const [loaded, setLoaded] = useState(false);
   const [mapCenter, setMapCenter] = useState([]);
   const [userLocation, setUserLocation] = useState([]);
+  const [selectedFuel, setSelectedFuel] = useState(null);
 
   useEffect(() => {
     async function fetchUserLocation() {
@@ -75,12 +76,13 @@ export default function App() {
           left: '20px',
           zIndex: 999
         }}>
-          <Fuels />
+          <Fuels setSelectedFuel={setSelectedFuel} selectedFuel={selectedFuel} />
         </div>
         <MapContainer center={mapCenter} zoom={13} scrollWheelZoom={true}>
           <MapComponent
             mapCenter={mapCenter}
             userLocation={userLocation}
+            selectedFuel={selectedFuel}
           />
         </MapContainer>
       </div>
