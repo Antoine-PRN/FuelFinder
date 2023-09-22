@@ -3,7 +3,7 @@ import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import { Icon } from 'leaflet';
 import { useEffect, useState } from 'react';
 import { Marker, Popup, TileLayer, useMap } from 'react-leaflet';
-import { Button } from '@mui/material';
+import Prices from './Prices';
 
 export default function MapComponent({ mapCenter, userLocation }) {
   console.log('mapCenter: ', mapCenter);
@@ -50,23 +50,7 @@ export default function MapComponent({ mapCenter, userLocation }) {
           icon={customPumpIcon}
         >
           <Popup>
-            <div>
-              <div>
-                <h3>{station.adresse}</h3>
-                {station.e10_prix ? <p>E10: {station.e10_prix}€</p> : undefined}
-                {station.e85_prix ? <p>E85: {station.e85_prix}€</p> : undefined}
-                {station.gazole_prix ? <p>Gazole: {station.gazole_prix}€</p> : undefined}
-                {station.glpc_prix ? <p>GLPc: {station.glpc_prix}€</p> : undefined}
-                {station.sp95_prix ? <p>Sp 95: {station.sp95_prix}€</p> : undefined}
-                {station.sp98_prix ? <p>Sp 98: {station.sp98_prix}€</p> : undefined}
-                {station.carburants_disponibles === null ? (
-                  <p>Aucune disponibilité</p>
-                ) : undefined}
-              </div>
-              <div>
-                <Button size='small' onClick={() => undefined}>S'y rendre</Button>
-              </div>
-            </div>
+            <Prices station={station} />
           </Popup>
         </Marker>
       ))}
