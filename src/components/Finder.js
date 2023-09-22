@@ -3,12 +3,16 @@ import { Autocomplete, IconButton, TextField } from '@mui/material';
 import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 
-export default function Finder({ citiesSuggestions }) {
+export default function Finder({ citiesSuggestions, updateMapCenter }) {
   const [inputValue, setInputValue] = useState('');
 
   // Function to filter and sort city suggestions based on user input
   const filterAndSortCities = (inputValue) => {
-    return citiesSuggestions
+    if (inputValue.length < 3) {
+      return ['Utiliser la localisation']; // Retourner un tableau vide si moins de 3 caractères
+    }
+
+    return  citiesSuggestions
       .filter((city) =>
         typeof inputValue === 'string' && city.toLowerCase().includes(inputValue.toLowerCase())
       )
@@ -37,7 +41,7 @@ export default function Finder({ citiesSuggestions }) {
             <TextField
               {...params}
               placeholder='Chercher une ville'
-              sx={{width: 290, p: 1}}
+              sx={{ width: 290, p: 1 }}
               margin="none"
               variant="standard"
               InputProps={{
@@ -47,10 +51,7 @@ export default function Finder({ citiesSuggestions }) {
                     type="button"
                     sx={{ p: '10px' }}
                     aria-label="search"
-                    onClick={() => {
-                      // Handle search button click here
-                      // You can perform the search operation here
-                    }}
+                    onClick={() => updateMapCenter(inputValue)}
                   >
                     <SearchIcon />
                   </IconButton>
