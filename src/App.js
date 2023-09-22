@@ -4,6 +4,7 @@ import MapComponent from "./components/Map";
 import "./styles.css";
 import "./loader.css"
 import { MapContainer } from "react-leaflet";
+import Fuels from "./components/Fuels";
 
 export default function App() {
 
@@ -61,12 +62,20 @@ export default function App() {
         <div
           style={{
             position: 'absolute',
-            top: '2%',
-            left: '5%',
+            top: '1.5%',
+            left: '60px',
             zIndex: 999,
           }}
         >
           <Finder citiesSuggestions={citiesSuggestions} updateMapCenter={updateMapCenter} />
+        </div>
+        <div style={{
+          position: 'absolute',
+          top: '15%',
+          left: '20px',
+          zIndex: 999
+        }}>
+          <Fuels />
         </div>
         <MapContainer center={mapCenter} zoom={13} scrollWheelZoom={true}>
           <MapComponent
