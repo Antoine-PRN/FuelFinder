@@ -21,8 +21,10 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
   // Get the map instance from the useMap hook
   const map = useMap();
 
+
+
   // Create icon for fuel station markers
-  const pumpIcon = new Icon({
+  const MidpumpIcon = new Icon({
     iconUrl: require('../images/icon_mid.png'),
     iconSize: [37, 40],
   });
@@ -34,6 +36,11 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
 
   const badPumpIcon = new Icon({
     iconUrl: require('../images/icon_bad.png'),
+    iconSize: [37, 40],
+  });
+
+  const pumpIcon = new Icon({
+    iconUrl: require('../images/icon.png'),
     iconSize: [37, 40],
   });
 
@@ -49,7 +56,13 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
   useEffect(() => {
     async function fetchFuelStationData() {
       try {
-        const response = await fetch(`https://api.prix-carburants.2aaz.fr/stations/around/${mapCenter[0]},${mapCenter[1]}?opendata=v2`);
+        const response = await fetch(`https://api.prix-carburants.2aaz.fr/stations/around/${mapCenter[0]},${mapCenter[1]}?opendata=v2`, {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json',
+            'Range': 'station=1-20'
+          }
+        });
         const data = await response.json();
 
         if (selectedFuel) {
@@ -73,12 +86,12 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
   }, [mapCenter, map, selectedFuel]);
 
   function getStationIcon(index) {
-    if (index < 3) {
+    if (index < 5) {
       return goodPumpIcon; // The 3 cheapest stations get the "good" icon
-    } else if (index >= fuelStationData.length - 3) {
+    } else if (index >= fuelStationData.length - 5) {
       return badPumpIcon; // The 3 most expensive stations get the "bad" icon
     } else {
-      return pumpIcon; // All other stations get the "normal" icon
+      return MidpumpIcon; // All other stations get the "normal" icon
     }
   }
 
