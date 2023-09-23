@@ -26,7 +26,7 @@ export default function Finder({ citiesSuggestions, updateMapCenter }) {
         p: '2px 4px',
         display: 'flex',
         alignItems: 'center',
-        width: 300,
+        width: 250,
       }}
     >
       <div sx={{ width: '100%' }}>
@@ -41,7 +41,7 @@ export default function Finder({ citiesSuggestions, updateMapCenter }) {
             <TextField
               {...params}
               placeholder='Chercher une ville'
-              sx={{ width: 290, p: 1 }}
+              sx={{ width: 240, p: 1 }}
               margin="none"
               variant="standard"
               InputProps={{

@@ -3,6 +3,7 @@ import Finder from "./components/Finder";
 import MapComponent from "./components/Map";
 import "./style/styles.css";
 import "./style/loader.css"
+import "./style/legend.css"
 import { MapContainer } from "react-leaflet";
 import Fuels from "./components/Fuels";
 
@@ -72,11 +73,22 @@ export default function App() {
         </div>
         <div style={{
           position: 'absolute',
-          top: '15%',
-          left: '20px',
+          top: '100px',
+          left: '12px',
           zIndex: 999
         }}>
           <Fuels setSelectedFuel={setSelectedFuel} selectedFuel={selectedFuel} />
+        </div>
+        <div className="legend">
+          <div>
+            <p>🟩 : Prix bas</p>
+          </div>
+          <div>
+            <p>🟧 : Prix intermédiaire</p>
+          </div>
+          <div>
+            <p>🟥 : Prix élevés</p>
+          </div>
         </div>
         <MapContainer center={mapCenter} zoom={13} scrollWheelZoom={true}>
           <MapComponent
@@ -85,7 +97,7 @@ export default function App() {
             selectedFuel={selectedFuel}
           />
         </MapContainer>
-      </div>
+      </div >
     ) : (
       <div class="loader-container">
         <div class="three-body">

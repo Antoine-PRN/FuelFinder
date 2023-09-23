@@ -69,11 +69,6 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
           }
         });
         const data = await response.json();
-        data.filter((station, index, self) => {
-          console.log(station.adresse)
-          return index === self.findIndex((s) => s.adresse === station.adresse);
-        });
-        // console.log(data);
 
         if (selectedFuel) {
           // Sort the data based on the selected fuel price
