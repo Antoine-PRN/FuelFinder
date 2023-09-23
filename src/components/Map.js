@@ -6,14 +6,14 @@ import { Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 import Prices from './Prices';
 
 /**
- * Render a map component with fuel station data and user location.
- *
- * @param {Object} props - The component props.
- * @param {Array} props.mapCenter - The coordinates of the map center.
- * @param {Array} props.userLocation - The coordinates of the user's location.
- * @param {string} props.selectedFuel - The selected fuel type (e.g., 'sp95' or 'gazole').
- * @returns {JSX.Element} - The map component.
- */
+  * Render a map component with fuel station data and user location.
+  *
+  * @param {Object} props - The component props.
+  * @param {Array} props.mapCenter - The coordinates of the map center.
+  * @param {Array} props.userLocation - The coordinates of the user's location.
+  * @param {string} props.selectedFuel - The selected fuel type (e.g., 'sp95' or 'gazole').
+  * @returns {JSX.Element} - The map component.
+  */
 export default function MapComponent({ mapCenter, userLocation, selectedFuel }) {
   // State for fuel station data
   const [fuelStationData, setFuelStationData] = useState([]);
@@ -44,6 +44,11 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
     iconSize: [37, 40],
   });
 
+  const disabledPumpIcon = new Icon({
+    iconUrl: require('../images/disabled_icon.png'),
+    iconSize: [37, 40],
+  })
+
   // Create icon for user location marker
   const locationIcon = new Icon({
     iconUrl: require('../images/position.png'),
@@ -64,6 +69,11 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
           }
         });
         const data = await response.json();
+        data.filter((station, index, self) => {
+          console.log(station.adresse)
+          return index === self.findIndex((s) => s.adresse === station.adresse);
+        });
+        // console.log(data);
 
         if (selectedFuel) {
           // Sort the data based on the selected fuel price
@@ -108,7 +118,7 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
         <Marker
           key={station.id}
           position={[parseFloat(station.geom.lat), parseFloat(station.geom.lon)]}
-          icon={selectedFuel ? (getStationIcon(index)) : pumpIcon} // You may want to change this icon based on station data
+          icon={station.carburants_disponibles === null ? (disabledPumpIcon) : (selectedFuel ? (getStationIcon(index)) : pumpIcon)} // You may want to change this icon based on station data
         >
           {/* Popup showing fuel station prices */}
           <Popup>
