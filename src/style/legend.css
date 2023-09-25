@@ -2,7 +2,7 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: flex-start;
   font-size: small;
   z-index: 999;
   bottom: 0;

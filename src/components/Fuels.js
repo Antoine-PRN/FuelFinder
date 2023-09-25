@@ -5,10 +5,12 @@ import diesel_icon from '../images/diesel_icon.png'
 import sp95_icon from '../images/sp95_icon.png'
 import sp98_icon from '../images/sp98_icon.png'
 import sp95_e10_icon from '../images/sp95_e10_icon.png'
+import e85_icon from '../images/e85_icon.png'
 
 export default function Fuels({ setSelectedFuel, selectedFuel }) {
   const fuels = [
     { name: 'Aucun', icon: none_icon },
+    {name: 'Ethanol', icon: e85_icon, prix: 'e85_prix'},
     { name: 'Sans plomb 95', icon: sp95_icon, prix: 'sp95_prix' },
     { name: 'Sans plomb 95 E10', icon: sp95_e10_icon, prix: 'e10_prix' },
     { name: 'Sans plomb 98', icon: sp98_icon, prix: 'sp98_prix' },

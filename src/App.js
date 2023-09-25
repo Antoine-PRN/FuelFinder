@@ -6,6 +6,7 @@ import "./style/loader.css"
 import "./style/legend.css"
 import { MapContainer } from "react-leaflet";
 import Fuels from "./components/Fuels";
+import Legend from "./components/Legend";
 
 export default function App() {
 
@@ -80,15 +81,7 @@ export default function App() {
           <Fuels setSelectedFuel={setSelectedFuel} selectedFuel={selectedFuel} />
         </div>
         <div className="legend">
-          <div>
-            <p>🟩 : Prix bas</p>
-          </div>
-          <div>
-            <p>🟧 : Prix intermédiaire</p>
-          </div>
-          <div>
-            <p>🟥 : Prix élevés</p>
-          </div>
+          <Legend selectedFuel={selectedFuel} />
         </div>
         <MapContainer center={mapCenter} zoom={13} scrollWheelZoom={true}>
           <MapComponent

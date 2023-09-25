@@ -17,10 +17,10 @@ import Prices from './Prices';
 export default function MapComponent({ mapCenter, userLocation, selectedFuel }) {
   // State for fuel station data
   const [fuelStationData, setFuelStationData] = useState([]);
+  const selectedFuelPrices = [];
 
   // Get the map instance from the useMap hook
   const map = useMap();
-
 
 
   // Create icon for fuel station markers
@@ -55,9 +55,6 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
     iconSize: [20, 20],
   });
 
-  /**
-   * Fetch fuel station data from API, sort it, and update state.
-   */
   useEffect(() => {
     async function fetchFuelStationData() {
       try {
@@ -74,7 +71,6 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
           // Sort the data based on the selected fuel price
           data.sort((a, b) =>
             a[`${selectedFuel.prix}`] - b[`${selectedFuel.prix}`]);
-          console.log(data);
         }
 
         setFuelStationData(data);
@@ -91,13 +87,39 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
   }, [mapCenter, map, selectedFuel]);
 
   function getStationIcon(index) {
-    if (index < 5) {
-      return goodPumpIcon; // The 3 cheapest stations get the "good" icon
-    } else if (index >= fuelStationData.length - 5) {
-      return badPumpIcon; // The 3 most expensive stations get the "bad" icon
-    } else {
-      return MidpumpIcon; // All other stations get the "normal" icon
+    // console.log(selectedFuelPrices);
+    // console.log(index)
+    console.log(selectedFuelPrices)
+
+    // Si dans les 5 premiers ET différente de null
+    if (index < 5 && selectedFuelPrices[index] !== 'null') {
+      return goodPumpIcon;
+    } 
+    //  Si valeur null
+    else if (selectedFuelPrices[index] === 'null') {
+      return disabledPumpIcon;
+    } 
+    //  Si dans les 5 plus élevé
+    else if (selectedFuelPrices.filter((price) => price !== 'null')[index] === selectedFuelPrices.filter((price) => price !== 'null').sort((a, b)=> b-a).slice(0, 5)) {
+      return badPumpIcon;
     }
+
+    //  Si rien de tout ca
+    else {
+      return MidpumpIcon;
+    }
+  }
+
+
+  function getSelectedFuelPrices(station) {
+
+    if (selectedFuel) {
+      // Ajoutez chaque prix du carburant sélectionné à la liste "prices"
+      if (station[selectedFuel.prix]) {
+        selectedFuelPrices.push(station[selectedFuel.prix]);
+      }
+    }
+    
   }
 
   return (
@@ -109,18 +131,27 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
       />
 
       {/* Render fuel station markers */}
-      {fuelStationData.map((station, index) => (
-        <Marker
-          key={station.id}
-          position={[parseFloat(station.geom.lat), parseFloat(station.geom.lon)]}
-          icon={station.carburants_disponibles === null ? (disabledPumpIcon) : (selectedFuel ? (getStationIcon(index)) : pumpIcon)} // You may want to change this icon based on station data
-        >
-          {/* Popup showing fuel station prices */}
-          <Popup>
-            <Prices station={station} selectedFuel={selectedFuel} />
-          </Popup>
-        </Marker>
-      ))}
+      {fuelStationData.map((station, index) => {
+        return (
+          getSelectedFuelPrices(station),
+          <Marker
+            key={station.id}
+            position={[parseFloat(station.geom.lat), parseFloat(station.geom.lon)]}
+            icon={
+              station.carburants_disponibles === null
+                ? disabledPumpIcon
+                : selectedFuel
+                  ? getStationIcon(index)
+                  : pumpIcon
+            }
+          >
+            {/* Popup showing fuel station prices */}
+            <Popup>
+              <Prices station={station} selectedFuel={selectedFuel} />
+            </Popup>
+          </Marker>
+        );
+      })}
 
       {/* User location marker */}
       <Marker position={userLocation} icon={locationIcon}>
