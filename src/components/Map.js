@@ -87,39 +87,45 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
   }, [mapCenter, map, selectedFuel]);
 
   function getStationIcon(index) {
+    const selectedFuelPrices = fuelStationData
+      .map(getSelectedFuelPrices)
     // console.log(selectedFuelPrices);
     // console.log(index)
-    console.log(selectedFuelPrices)
+    // console.log(selectedFuelPrices)
 
     // Si dans les 5 premiers ET différente de null
-    if (index < 5 && selectedFuelPrices[index] !== 'null') {
+    if (index < 6 && selectedFuelPrices[index] !== 'null') {
       return goodPumpIcon;
-    } 
+    }
     //  Si valeur null
     else if (selectedFuelPrices[index] === 'null') {
       return disabledPumpIcon;
-    } 
+    }
     //  Si dans les 5 plus élevé
-    else if (selectedFuelPrices.filter((price) => price !== 'null')[index] === selectedFuelPrices.filter((price) => price !== 'null').sort((a, b)=> b-a).slice(0, 5)) {
-      return badPumpIcon;
+    else if (selectedFuelPrices[index] !== null) {
+      const top5Prices = selectedFuelPrices
+        .filter(price => price !== null) // Filtrez les prix non nulls
+        .sort((a, b) => b - a) // Triez du plus élevé au plus bas
+        .slice(0, 6); // Obtenez les 5 premiers
+
+      if (top5Prices.includes(selectedFuelPrices[index])) {
+        return badPumpIcon;
+      }
     }
 
     //  Si rien de tout ca
-    else {
-      return MidpumpIcon;
-    }
+    return MidpumpIcon;
   }
 
 
   function getSelectedFuelPrices(station) {
-
     if (selectedFuel) {
-      // Ajoutez chaque prix du carburant sélectionné à la liste "prices"
+      // Vérifiez si la station a des prix pour le carburant sélectionné
       if (station[selectedFuel.prix]) {
-        selectedFuelPrices.push(station[selectedFuel.prix]);
+        return station[selectedFuel.prix];
       }
     }
-    
+    return null;
   }
 
   return (
