@@ -17,7 +17,6 @@ import Prices from './Prices';
 export default function MapComponent({ mapCenter, userLocation, selectedFuel }) {
   // State for fuel station data
   const [fuelStationData, setFuelStationData] = useState([]);
-  const selectedFuelPrices = [];
 
   // Get the map instance from the useMap hook
   const map = useMap();
@@ -89,10 +88,7 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
   function getStationIcon(index) {
     const selectedFuelPrices = fuelStationData
       .map(getSelectedFuelPrices)
-    // console.log(selectedFuelPrices);
-    // console.log(index)
-    // console.log(selectedFuelPrices)
-
+      
     // Si dans les 5 premiers ET différente de null
     if (index < 6 && selectedFuelPrices[index] !== 'null') {
       return goodPumpIcon;
