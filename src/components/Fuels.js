@@ -41,18 +41,18 @@ export default function Fuels({ setSelectedFuel, selectedFuel }) {
       flexDirection: 'column',
       alignItems: 'center',
       width: '60px',
+      height: '65px',
       borderRadius: '5px',
       justifyContent: 'space-around',
       background: 'white',
     }}>
       <Tooltip title="Sélectionnez le carburant" placement="right">
-        <Button onClick={handleClick}>
+        <Button onClick={handleClick} style={{height: '100%'}}>
           {selectedFuel ? (
             <img src={selectedFuel.icon} alt={selectedFuel.name} />
           ) : (
-              anchorEl ? <CloseIcon /> : <MenuIcon />
+              anchorEl ? <CloseIcon style={{color: 'red'}} /> : <MenuIcon style={{color: 'black'}} />
           )}
-          {/* {selectedFuel ? (selectedFuel.icon) : (anchorEl ? <CloseIcon /> : <MenuIcon />)} Utilisez CloseIcon si le menu est ouvert, sinon utilisez MenuIcon */}
         </Button>
       </Tooltip>
       <Menu

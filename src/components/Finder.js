@@ -26,10 +26,11 @@ export default function Finder({ citiesSuggestions, updateMapCenter }) {
         p: '2px 4px',
         display: 'flex',
         alignItems: 'center',
-        width: 250,
+        width: '30%',
+        maxHeight: '65px'
       }}
     >
-      <div sx={{ width: '100%' }}>
+      <div style={{width: '100%'}}>
         <Autocomplete
           id="city-search"
           freeSolo
@@ -41,7 +42,7 @@ export default function Finder({ citiesSuggestions, updateMapCenter }) {
             <TextField
               {...params}
               placeholder='Chercher une ville'
-              sx={{ width: 240, p: 1 }}
+              sx={{ p: 1 }}
               margin="none"
               variant="standard"
               InputProps={{

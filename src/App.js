@@ -7,6 +7,8 @@ import "./style/legend.css"
 import { MapContainer } from "react-leaflet";
 import Fuels from "./components/Fuels";
 import Legend from "./components/Legend";
+import { Box } from "@mui/material";
+import Profile from "./components/Profile";
 
 export default function App() {
 
@@ -66,24 +68,34 @@ export default function App() {
           style={{
             position: 'absolute',
             top: '1.5%',
-            left: '60px',
+            left: '80px',
             zIndex: 999,
+            width: '80%',
           }}
         >
           <Finder citiesSuggestions={citiesSuggestions} updateMapCenter={updateMapCenter} />
         </div>
+        <Box flexGrow={1}/>
         <div style={{
           position: 'absolute',
-          top: '100px',
+          top: '3%',
+          right: '20px',
+          zIndex: 999,
+        }}>
+          <Profile />
+        </div>
+        <div style={{
+          position: 'absolute',
+          top: '1.5%',
           left: '12px',
-          zIndex: 999
+          zIndex: 999,
         }}>
           <Fuels setSelectedFuel={setSelectedFuel} selectedFuel={selectedFuel} />
         </div>
         <div className="legend">
           <Legend selectedFuel={selectedFuel} />
         </div>
-        <MapContainer center={mapCenter} zoom={13} scrollWheelZoom={true}>
+        <MapContainer center={mapCenter} zoom={13} scrollWheelZoom={true} zoomControl={false}>
           <MapComponent
             mapCenter={mapCenter}
             userLocation={userLocation}
@@ -92,11 +104,11 @@ export default function App() {
         </MapContainer>
       </div >
     ) : (
-      <div class="loader-container">
-        <div class="three-body">
-          <div class="three-body__dot"></div>
-          <div class="three-body__dot"></div>
-          <div class="three-body__dot"></div>
+      <div className="loader-container">
+        <div className="three-body">
+          <div className="three-body__dot"></div>
+          <div className="three-body__dot"></div>
+          <div className="three-body__dot"></div>
         </div>
       </div>
     )
