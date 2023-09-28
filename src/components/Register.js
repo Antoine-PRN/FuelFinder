@@ -34,14 +34,35 @@ export default function Register({ setIndex }) {
     });
   };
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     // Password confirmation 
     if (formData.password !== formData.confirmPassword) {
       setErrorMessage("Les mots de passe ne correspondent pas."); // Définissez le message d'erreur
       return; // Arrêtez le traitement du formulaire
+    };
+
+    try {
+      const response = await fetch('http://localhost:5000/user/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "firstname": formData.firstname,
+          "lastname": formData.lastname,
+          "email": formData.email,
+          "password": formData.password
+        })
+      });
+      if (response.status === 201) {
+        setIndex(0);
+      }
+    } catch(err) {
+      console.log(err)
     }
+
   };
 
   function toggleShowPassword() {

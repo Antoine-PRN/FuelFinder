@@ -7,12 +7,15 @@ import {
   Container,
   Avatar,
 } from '@mui/material';
+import { useDispatch } from 'react-redux';
 
-export default function Login({ setIndex }) {
+export default function Login({ setIndex, setOpen }) {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+
+  const dispatch = useDispatch();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -22,10 +25,32 @@ export default function Login({ setIndex }) {
     });
   };
 
-  const handleSubmit = (event) => {
+  async function handleSubmit (event) {
     event.preventDefault();
-    // Ajoutez ici la logique de soumission du formulaire, par exemple, l'envoi des données au serveur
-    console.log(formData);
+    try {
+      const response = await fetch('http://localhost:5000/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "email": formData.email,
+          "password": formData.password
+        })
+      });
+      const data = await response.json();
+      console.log(data);
+      if (response.status === 200) {
+        dispatch({
+          type: 'SET_AUTHENTICATED',
+          payload: data.token
+        });
+        setOpen(false);
+        return data;
+      }
+    } catch(err) {
+      console.log(err)
+    }
   };
 
   return (
@@ -72,6 +97,7 @@ export default function Login({ setIndex }) {
             variant="contained"
             color="primary"
             style={{ margin: '1rem 0 2rem 0' }}
+            onClick={(event) => handleSubmit(event)}
           >
             Se connecter
           </Button>
