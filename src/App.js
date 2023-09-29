@@ -42,6 +42,7 @@ export default function App() {
         setLoaded(false)
       }
     }
+
     fetchCities();
     fetchUserLocation();
   }, []);

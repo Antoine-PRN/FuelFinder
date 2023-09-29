@@ -44,6 +44,7 @@ export default function Login({ setIndex, setOpen }) {
         })
       });
       const data = await response.json();
+
       if (response.status === 200) {
         dispatch({
           type: 'SET_AUTHENTICATED',
@@ -52,7 +53,7 @@ export default function Login({ setIndex, setOpen }) {
         if (stayLoggedIn) {
           dispatch({
             type: 'SET_REFRESH_TOKEN',
-            refresh_token: data.refresh_token
+            refresh_token: data.refreshToken
           })
         }
         setOpen(false);
