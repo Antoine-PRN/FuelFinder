@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Login from './Login';
 import Register from './Register';
 import { useSelector } from 'react-redux';
+import ProfileData from './ProfileData';
 
 export default function Profile() {
   const [open, setOpen] = useState(false);
@@ -11,13 +12,20 @@ export default function Profile() {
   const authenticated = useSelector(state => state.store.token);
   const refresh_token = useSelector(state => state.store.refresh_token);
 
-  const components = [<Login setIndex={setIndex} setOpen={setOpen} />, <Register setIndex={setIndex} setOpen={setOpen} />]
+  const components = [
+  <Login setIndex={setIndex} setOpen={setOpen} />, 
+  <Register setIndex={setIndex} setOpen={setOpen} />,
+  <ProfileData setOpen={setOpen} />
+]
 
   return (
     <div>
       <Button
         style={{ background: 'white', display: 'flex', alignItems: 'center', padding: '10px' }}
-        onClick={() => authenticated || refresh_token ? (undefined) : (setOpen(true))}
+        onClick={() => {
+          (authenticated || refresh_token) && setIndex(2);
+          setOpen(true);
+        }}
       >
         <PersonIcon />
         {authenticated || refresh_token ? (

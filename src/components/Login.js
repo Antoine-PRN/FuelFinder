@@ -73,7 +73,9 @@ export default function Login({ setIndex, setOpen }) {
             Connexion
           </Typography>
           <Typography style={{ fontSize: 'small' }}>
-            <Button size='small' style={{ fontSize: 'small', margin: '0.5rem 0 0 0' }} onClick={() => setIndex(1)}>Vous n'avez pas de compte ? Créez en un</Button>
+            <Button size='small' style={{ fontSize: 'small', margin: '0.5rem 0 0 0' }} onClick={() => setIndex(1)}>
+              Vous n'avez pas de compte ? Créez en un
+            </Button>
           </Typography>
           <form style={{ width: '100%', marginTop: '1rem' }} onSubmit={handleSubmit}>
             <Grid container spacing={2}>
