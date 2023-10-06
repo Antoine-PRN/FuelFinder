@@ -9,6 +9,8 @@ import Fuels from "./components/Fuels";
 import Legend from "./components/Legend";
 import { Box } from "@mui/material";
 import Profile from "./components/Profile";
+import Cookies from "js-cookie";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export default function App() {
 
@@ -17,6 +19,7 @@ export default function App() {
   const [mapCenter, setMapCenter] = useState([]);
   const [userLocation, setUserLocation] = useState([]);
   const [selectedFuel, setSelectedFuel] = useState(null);
+  const clientId = '520774578108-1umak1jhkcdja9c9pt9c76aoqc6ssksl.apps.googleusercontent.com'
 
   useEffect(() => {
     async function fetchUserLocation() {
@@ -43,6 +46,17 @@ export default function App() {
       }
     }
 
+    async function getGoogleData() {
+      try {
+        const google_token = Cookies.get('google_token')
+        if (google_token) {
+
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    getGoogleData();
     fetchCities();
     fetchUserLocation();
   }, []);
@@ -76,15 +90,17 @@ export default function App() {
         >
           <Finder citiesSuggestions={citiesSuggestions} updateMapCenter={updateMapCenter} />
         </div>
-        <Box flexGrow={1}/>
-        <div style={{
-          position: 'absolute',
-          top: '3%',
-          right: '20px',
-          zIndex: 999,
-        }}>
-          <Profile />
-        </div>
+        <Box flexGrow={1} />
+        <GoogleOAuthProvider clientId={clientId}>
+          <div style={{
+            position: 'absolute',
+            top: '3%',
+            right: '20px',
+            zIndex: 999,
+          }}>
+            <Profile />
+          </div>
+        </GoogleOAuthProvider>
         <div style={{
           position: 'absolute',
           top: '1.5%',

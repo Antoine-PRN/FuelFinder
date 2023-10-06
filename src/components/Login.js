@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   TextField,
@@ -10,15 +10,18 @@ import {
   Checkbox,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
+import { googleLogout, useGoogleLogin } from '@react-oauth/google';
 
 export default function Login({ setIndex, setOpen }) {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-
+  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
+  console.log('profile: ', profile)
+  console.log('user: ', user)
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
-
   const dispatch = useDispatch();
 
   const handleInputChange = (event) => {
@@ -63,6 +66,35 @@ export default function Login({ setIndex, setOpen }) {
       console.log(err)
     }
   };
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => setUser(codeResponse),
+    onError: (error) => console.log('Login Failed:', error)
+  });
+
+  const logOut = () => {
+    googleLogout();
+    setProfile(null);
+  };
+
+  useEffect(() => {
+    if (user && user.access_token) {
+      fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${user.access_token}`,
+          Accept: 'application/json',
+        },
+      })
+        .then((res) => {
+          return res.json(); // Parse the JSON data
+        })
+        .then((data) => {
+          setProfile(data); // Set the profile state with the parsed data
+        })
+        .catch((err) => console.error(err)); // Handle any errors
+    }
+  }, [user, setOpen, dispatch]);
 
   return (
     <Container component="main" maxWidth="xs" style={{ background: 'white', borderRadius: '5px' }}>
@@ -111,6 +143,32 @@ export default function Login({ setIndex, setOpen }) {
                 />
                 Rester connecté ?
               </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              {profile && profile.name ? (
+                <div>
+                  <Typography variant="caption">Bonjour {profile.name} !</Typography>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      style={{ margin: '1rem 0' }}
+                      onClick={() => logOut()}
+                    >
+                      Se déonnecter de Google
+                    </Button>
+                </div>
+              ) : (
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  style={{ margin: '1rem 0' }}
+                  onClick={() => login()}
+                >
+                  Connexion avec Google
+                </Button>
+              )}
             </Grid>
             <Button
               type="submit"
