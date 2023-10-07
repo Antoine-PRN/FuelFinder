@@ -9,61 +9,58 @@ import {
   ClickAwayListener,
   Checkbox,
 } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { googleLogout, useGoogleLogin } from '@react-oauth/google';
 
 export default function Login({ setIndex, setOpen }) {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
-  console.log('profile: ', profile)
-  console.log('user: ', user)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
   const dispatch = useDispatch();
+  const googleProfile = useSelector((state) => state.store.profile)
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    if (name === 'email') {
+      setEmail(value);
+    } else if (name === 'password') {
+      setPassword(value);
+    }
   };
 
-  async function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await fetch('http://localhost:5000/user/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          "email": formData.email,
-          "password": formData.password,
-          "stayLoggedIn": stayLoggedIn
-        })
+          email,
+          password,
+          stayLoggedIn,
+        }),
       });
       const data = await response.json();
 
       if (response.status === 200) {
         dispatch({
           type: 'SET_AUTHENTICATED',
-          payload: data.token
+          payload: data.token,
         });
         if (stayLoggedIn) {
           dispatch({
             type: 'SET_REFRESH_TOKEN',
-            refresh_token: data.refreshToken
-          })
+            refresh_token: data.refreshToken,
+          });
         }
         setOpen(false);
         return data;
       }
     } catch (err) {
-      console.log(err)
+      console.error(err);
     }
   };
 
@@ -74,27 +71,71 @@ export default function Login({ setIndex, setOpen }) {
 
   const logOut = () => {
     googleLogout();
-    setProfile(null);
+    dispatch({
+      type: 'SET_PROFILE',
+      profile: null
+    });
   };
 
   useEffect(() => {
-    if (user && user.access_token) {
-      fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${user.access_token}`,
-          Accept: 'application/json',
-        },
-      })
-        .then((res) => {
-          return res.json(); // Parse the JSON data
-        })
-        .then((data) => {
-          setProfile(data); // Set the profile state with the parsed data
-        })
-        .catch((err) => console.error(err)); // Handle any errors
-    }
+    const fetchData = async () => {
+      try {
+        if (user && user.access_token) {
+          // Effectuez la première requête pour récupérer les informations de l'utilisateur
+          const userInfoResponse = await fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${user.access_token}`,
+              Accept: 'application/json',
+            },
+          });
+
+          if (userInfoResponse.status === 200) {
+            const userData = await userInfoResponse.json();
+
+            // Effectuez la deuxième requête pour enregistrer les informations de l'utilisateur sur le backend
+            const response = await fetch('http://localhost:5000/google/register', {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${user.access_token}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                user: userData
+              })
+            });
+
+            const data = await response.json()
+            console.log(data.token)
+
+            if (response.status === 201) {
+              dispatch({
+                type: 'SET_USER',
+                user: user
+              });
+              dispatch({
+                type: 'SET_PROFILE',
+                profile: userData
+              });
+              dispatch({
+                type: 'SET_AUTHENTICATED',
+                payload: data.token
+              })
+            } else {
+              console.error('Failed to register user');
+            }
+          } else {
+            console.error('Failed to fetch user info');
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData();
   }, [user, setOpen, dispatch]);
+
 
   return (
     <Container component="main" maxWidth="xs" style={{ background: 'white', borderRadius: '5px' }}>
@@ -119,7 +160,7 @@ export default function Login({ setIndex, setOpen }) {
                   id="email"
                   label="Email"
                   name="email"
-                  value={formData.email}
+                  value={email}
                   onChange={handleInputChange}
                 />
               </Grid>
@@ -132,7 +173,7 @@ export default function Login({ setIndex, setOpen }) {
                   label="Mot de passe"
                   type="password"
                   id="password"
-                  value={formData.password}
+                  value={password}
                   onChange={handleInputChange}
                 />
               </Grid>
@@ -145,18 +186,18 @@ export default function Login({ setIndex, setOpen }) {
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              {profile && profile.name ? (
+              {googleProfile ? (
                 <div>
-                  <Typography variant="caption">Bonjour {profile.name} !</Typography>
-                    <Button
-                      fullWidth
-                      variant="contained"
-                      color="primary"
-                      style={{ margin: '1rem 0' }}
-                      onClick={() => logOut()}
-                    >
-                      Se déonnecter de Google
-                    </Button>
+                  <Typography variant="caption">Bonjour {googleProfile.name} !</Typography>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    style={{ margin: '1rem 0' }}
+                    onClick={() => logOut()}
+                  >
+                    Se déonnecter de Google
+                  </Button>
                 </div>
               ) : (
                 <Button

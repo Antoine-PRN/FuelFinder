@@ -10,7 +10,8 @@ export default function Profile() {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
   const authenticated = useSelector(state => state.store.token);
-  const refresh_token = useSelector(state => state.store.refresh_token);
+  const googleProfile = useSelector(state => state.store.profile)
+  console.log(authenticated)
 
   const components = [
   <Login setIndex={setIndex} setOpen={setOpen} />, 
@@ -23,12 +24,12 @@ export default function Profile() {
       <Button
         style={{ background: 'white', display: 'flex', alignItems: 'center', padding: '10px' }}
         onClick={() => {
-          (authenticated || refresh_token) && setIndex(2);
+          (authenticated || googleProfile) && setIndex(2);
           setOpen(true);
         }}
       >
         <PersonIcon />
-        {authenticated || refresh_token ? (
+        {authenticated || googleProfile ? (
           <span className="text" color='primary'>Profil</span>
         ) : (
           <span className="text">Se connecter</span>

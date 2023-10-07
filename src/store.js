@@ -3,6 +3,8 @@ import { configureStore } from '@reduxjs/toolkit';
 const initialState = {
   token: null,
   refresh_token: null,
+  user: null,
+  profile: null,
   // theme: false,
 };
 
@@ -17,6 +19,16 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         refresh_token: action.refresh_token,
+      }
+    case 'SET_USER' : 
+      return {
+        ...state,
+        user: action.user
+      }
+    case 'SET_PROFILE':
+      return {
+        ...state,
+        profile: action.profile
       }
     default:
       return state;
