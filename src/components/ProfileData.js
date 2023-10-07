@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Typography,
   Grid,
@@ -8,12 +8,27 @@ import {
   Divider,
   Box,
   IconButton,
+  Button,
 } from "@mui/material";
 import SettingsIcon from '@mui/icons-material/Settings';
+import { googleLogout } from "@react-oauth/google";
 
 export default function ProfileData({ setOpen }) {
   const token = useSelector((state) => state.store.token);
   const [userData, setUserData] = useState({});
+  const dispatch = useDispatch()
+
+  const logOut = () => {
+    googleLogout();
+    dispatch({
+      type: 'SET_PROFILE',
+      profile: null
+    });
+    dispatch({
+      type: 'SET_AUTHENTICATED',
+      payload: null
+    })
+  };
 
   useEffect(() => {
     async function getUser() {
@@ -26,12 +41,7 @@ export default function ProfileData({ setOpen }) {
           },
         });
 
-        if (!response.ok) {
-          throw new Error(`La requête a échoué avec le code : ${response.status}`);
-        }
-
         const data = await response.json();
-        console.log(data.user[0])
         setUserData(data.user[0]);
       } catch (error) {
         console.error(error);
@@ -74,6 +84,17 @@ export default function ProfileData({ setOpen }) {
           </Grid>
         </Grid>
       </ClickAwayListener>
+      <Box mt={2} p={2} borderTop={1} borderColor="divider">
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          style={{ margin: '1rem 0' }}
+          onClick={() => logOut()}
+        >
+          Se déonnecter de Google
+        </Button>
+      </Box>
     </Container>
   );
 }

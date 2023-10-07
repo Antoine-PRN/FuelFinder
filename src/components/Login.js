@@ -9,8 +9,8 @@ import {
   ClickAwayListener,
   Checkbox,
 } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { googleLogout, useGoogleLogin } from '@react-oauth/google';
+import { useDispatch } from 'react-redux';
+import { useGoogleLogin } from '@react-oauth/google';
 
 export default function Login({ setIndex, setOpen }) {
   const [email, setEmail] = useState('');
@@ -18,7 +18,6 @@ export default function Login({ setIndex, setOpen }) {
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const dispatch = useDispatch();
-  const googleProfile = useSelector((state) => state.store.profile)
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -56,9 +55,9 @@ export default function Login({ setIndex, setOpen }) {
             refresh_token: data.refreshToken,
           });
         }
-        setOpen(false);
         return data;
       }
+      setOpen(false);
     } catch (err) {
       console.error(err);
     }
@@ -69,13 +68,7 @@ export default function Login({ setIndex, setOpen }) {
     onError: (error) => console.log('Login Failed:', error)
   });
 
-  const logOut = () => {
-    googleLogout();
-    dispatch({
-      type: 'SET_PROFILE',
-      profile: null
-    });
-  };
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -120,6 +113,7 @@ export default function Login({ setIndex, setOpen }) {
                 type: 'SET_AUTHENTICATED',
                 payload: data.token
               })
+              setOpen(false);
             } else {
               console.error('Failed to register user');
             }
@@ -185,30 +179,15 @@ export default function Login({ setIndex, setOpen }) {
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              {googleProfile ? (
-                <div>
-                  <Typography variant="caption">Bonjour {googleProfile.name} !</Typography>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    style={{ margin: '1rem 0' }}
-                    onClick={() => logOut()}
-                  >
-                    Se déonnecter de Google
-                  </Button>
-                </div>
-              ) : (
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  style={{ margin: '1rem 0' }}
-                  onClick={() => login()}
-                >
-                  Connexion avec Google
-                </Button>
-              )}
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                style={{ margin: '1rem 0' }}
+                onClick={() => login()}
+              >
+                Connexion avec Google
+              </Button>
             </Grid>
             <Button
               type="submit"
