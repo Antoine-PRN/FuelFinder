@@ -11,7 +11,6 @@ export default function Profile() {
   const [index, setIndex] = useState(0);
   const authenticated = useSelector(state => state.store.token);
   const googleProfile = useSelector(state => state.store.profile)
-  console.log(authenticated)
 
   const components = [
   <Login setIndex={setIndex} setOpen={setOpen} />, 

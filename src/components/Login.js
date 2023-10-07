@@ -106,7 +106,6 @@ export default function Login({ setIndex, setOpen }) {
             });
 
             const data = await response.json()
-            console.log(data.token)
 
             if (response.status === 201) {
               dispatch({
