@@ -15,7 +15,7 @@ export default function Profile() {
   const components = [
   <Login setIndex={setIndex} setOpen={setOpen} />, 
   <Register setIndex={setIndex} setOpen={setOpen} />,
-  <ProfileData setOpen={setOpen} />
+  <ProfileData setOpen={setOpen} setIndex={setIndex} />
 ]
 
   return (

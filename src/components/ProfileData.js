@@ -13,8 +13,9 @@ import {
 import SettingsIcon from '@mui/icons-material/Settings';
 import { googleLogout } from "@react-oauth/google";
 
-export default function ProfileData({ setOpen }) {
+export default function ProfileData({ setOpen, setIndex }) {
   const token = useSelector((state) => state.store.token);
+  const googleAuth = useSelector((state) => state.store.profile);
   const [userData, setUserData] = useState({});
   const dispatch = useDispatch()
 
@@ -29,6 +30,15 @@ export default function ProfileData({ setOpen }) {
       payload: null
     })
   };
+
+  function handleLogout(event) {
+    event.preventDefault();
+    dispatch({
+      type: 'SET_AUTHENTICATED',
+      payload: null
+    })
+    setIndex(0)
+  }
 
   useEffect(() => {
     async function getUser() {
@@ -84,15 +94,28 @@ export default function ProfileData({ setOpen }) {
           </Grid>
         </Grid>
       </ClickAwayListener>
+      {googleAuth && (
+        <Box mt={2} p={2} borderTop={1} borderColor="divider">
+          <Button
+            fullWidth
+            variant="contained"
+            color="error"
+            style={{ margin: '1rem 0' }}
+            onClick={() => logOut()}
+          >
+            Se déonnecter de Google
+          </Button>
+        </Box>
+      )}
       <Box mt={2} p={2} borderTop={1} borderColor="divider">
         <Button
           fullWidth
           variant="contained"
-          color="primary"
+          color="error"
           style={{ margin: '1rem 0' }}
-          onClick={() => logOut()}
+          onClick={(event) => handleLogout(event)}
         >
-          Se déonnecter de Google
+          Se déconnecter
         </Button>
       </Box>
     </Container>
