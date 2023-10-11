@@ -5,6 +5,7 @@ const initialState = {
   refresh_token: null,
   user: null,
   profile: null,
+  premium: null,
   // theme: false,
 };
 
@@ -19,6 +20,11 @@ function reducer(state = initialState, action) {
       return {
         ...state,
         refresh_token: action.refresh_token,
+      }
+    case 'SET_PREMIUM' :
+      return {
+        ...state,
+        premium: action.premium
       }
     case 'SET_USER' : 
       return {

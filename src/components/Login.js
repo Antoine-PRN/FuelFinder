@@ -31,7 +31,7 @@ export default function Login({ setIndex, setOpen }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/user/login', {
+      const response = await fetch(`${process.env.REACT_APP_URI}/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,12 +49,17 @@ export default function Login({ setIndex, setOpen }) {
           type: 'SET_AUTHENTICATED',
           payload: data.token,
         });
+        dispatch({
+          type: 'SET_PREMIUM',
+          premium: data.premium
+        })
         if (stayLoggedIn) {
           dispatch({
             type: 'SET_REFRESH_TOKEN',
             refresh_token: data.refreshToken,
           });
         }
+        setOpen(false)
         return data;
       }
       setOpen(false);
@@ -87,7 +92,7 @@ export default function Login({ setIndex, setOpen }) {
             const userData = await userInfoResponse.json();
 
             // Effectuez la deuxième requête pour enregistrer les informations de l'utilisateur sur le backend
-            const response = await fetch('http://localhost:5000/google/register', {
+            const response = await fetch('${process.env.REACT_APP_URI/google/register', {
               method: 'POST',
               headers: {
                 Authorization: `Bearer ${user.access_token}`,

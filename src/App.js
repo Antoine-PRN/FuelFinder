@@ -35,7 +35,7 @@ export default function App() {
 
     async function fetchCities() {
       try {
-        const response = await fetch('http://localhost:5000/cities');
+        const response = await fetch(`${process.env.REACT_APP_URI}/cities`);
         const cities = await response.json();
 
         setCitiesSuggestions(cities);

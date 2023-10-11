@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Menu, MenuItem, Tooltip } from '@mui/material';
+import { Button, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close'; // Importez l'icône de croix
 import '../style/fuelBar.css';
@@ -9,8 +9,10 @@ import sp95_icon from '../images/sp95_icon.png';
 import sp98_icon from '../images/sp98_icon.png';
 import sp95_e10_icon from '../images/sp95_e10_icon.png';
 import e85_icon from '../images/e85_icon.png';
+import { useSelector } from 'react-redux';
 
 export default function Fuels({ setSelectedFuel, selectedFuel }) {
+
   const fuels = [
     { name: 'Aucun', icon: none_icon },
     { name: 'Ethanol', icon: e85_icon, prix: 'e85_prix' },
@@ -19,7 +21,7 @@ export default function Fuels({ setSelectedFuel, selectedFuel }) {
     { name: 'Sans plomb 98', icon: sp98_icon, prix: 'sp98_prix' },
     { name: 'Diesel', icon: diesel_icon, prix: 'gazole_prix' },
   ];
-
+  const premium = useSelector(state => state.store.premium)
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -47,11 +49,11 @@ export default function Fuels({ setSelectedFuel, selectedFuel }) {
       background: 'white',
     }}>
       <Tooltip title="Sélectionnez le carburant" placement="right">
-        <Button onClick={handleClick} style={{height: '100%'}}>
+        <Button onClick={handleClick} style={{ height: '100%' }}>
           {selectedFuel ? (
             <img src={selectedFuel.icon} alt={selectedFuel.name} />
           ) : (
-              anchorEl ? <CloseIcon style={{color: 'red'}} /> : <MenuIcon style={{color: 'black'}} />
+            anchorEl ? <CloseIcon style={{ color: 'red' }} /> : <MenuIcon style={{ color: 'black' }} />
           )}
         </Button>
       </Tooltip>
@@ -60,16 +62,23 @@ export default function Fuels({ setSelectedFuel, selectedFuel }) {
         open={Boolean(anchorEl)}
         onClose={() => handleClose()}
       >
-        {fuels.map((fuel) => (
-          <MenuItem
-            key={fuel.name}
-            onClick={() => handleClose(fuel)}
-            selected={selectedFuel && selectedFuel.name === fuel.name}
-          >
-            <img src={fuel.icon} alt={fuel.name} style={{marginRight: '10px'}} />
-            {fuel.name}
-          </MenuItem>
-        ))}
+        {premium === null ? (
+          <Typography style={{ margin: '10px' }}>
+            Contenu vérouillé
+          </Typography>
+        ) : (
+          fuels.map((fuel) => (
+            <MenuItem
+              key={fuel.name}
+              onClick={() => handleClose(fuel)}
+              selected={selectedFuel && selectedFuel.name === fuel.name}
+            >
+              <img src={fuel.icon} alt={fuel.name} style={{ marginRight: '10px' }} />
+              {fuel.name}
+            </MenuItem>
+          ))
+        )}
+
       </Menu>
     </div>
   );
