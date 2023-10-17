@@ -4,20 +4,59 @@ import {
   Typography,
   Grid,
   Container,
-  ClickAwayListener,
-  Divider,
   Box,
   IconButton,
   Button,
+  Modal,
 } from "@mui/material";
 import SettingsIcon from '@mui/icons-material/Settings';
 import { googleLogout } from "@react-oauth/google";
+import '../style/PremiumButton.css'
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js'
+import Paiement from './Paiement';
 
 export default function ProfileData({ setOpen, setIndex }) {
+  const [userData, setUserData] = useState({});
+  const [stripePromise, setStripePromise] = useState(null);
+  const [clientSecret, setClientSecret] = useState(null);
+  const [showCard, setShowCard] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
   const token = useSelector((state) => state.store.token);
   const googleAuth = useSelector((state) => state.store.profile);
-  const [userData, setUserData] = useState({});
+
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_URI}/config`)
+      .then(response => response.json())
+      .then(data => {
+        const publishableKey = data.publishableKey;
+        setStripePromise(loadStripe(publishableKey));
+      })
+      .catch(error => {
+        console.error('Error fetching publishable key:', error);
+      });
+  }, [modalOpen]);
+
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_URI}/create-payment-intent`, {
+      method: 'POST',
+      body: JSON.stringify({}),
+    })
+      .then(response => response.json())
+      .then(data => {
+        const client_secret = data.clientSecret;
+        setClientSecret(client_secret);
+      })
+      .catch(error => {
+        console.error('Error fetching client_secret:', error);
+        // Handle errors here, e.g., display an error message to the user
+      });
+  }, [stripePromise]);
+
 
   const logOut = () => {
     googleLogout();
@@ -28,7 +67,8 @@ export default function ProfileData({ setOpen, setIndex }) {
     dispatch({
       type: 'SET_AUTHENTICATED',
       payload: null
-    })
+    });
+    setIndex(0);
   };
 
   function handleLogout(event) {
@@ -63,8 +103,8 @@ export default function ProfileData({ setOpen, setIndex }) {
   }, [token, setOpen]);
 
   return (
-    <Container component="main" maxWidth="xs" style={{ background: 'white', borderRadius: '5px', padding: '1rem' }}>
-      <ClickAwayListener onClickAway={() => setOpen(false)}>
+    <>
+      <Container component="main" maxWidth="xs" style={{ background: 'white', borderRadius: '5px', padding: '1rem' }}>
         <Grid container spacing={2} direction="column">
           <Grid item>
             <Typography variant="h4">
@@ -87,37 +127,47 @@ export default function ProfileData({ setOpen, setIndex }) {
             </Box>
           </Grid>
           <Grid item>
-            <Divider />
-          </Grid>
-          <Grid item>
-            Plus tard ajouter la possibilité d'ajouter le véhicule ainsi que le carburant préféré options payantes etc
+            <button className="button" onClick={() => stripePromise && clientSecret && setModalOpen(true)}>
+              Supprimer les pubs
+            </button>
+            {/* {stripePromise && clientSecret && (
+              <Elements stripe={stripePromise} options={{ clientSecret }}>
+                <Paiement />
+              </Elements>
+            )} */}
           </Grid>
         </Grid>
-      </ClickAwayListener>
-      {googleAuth && (
-        <Box mt={2} p={2} borderTop={1} borderColor="divider">
+
+        {googleAuth ? (
           <Button
             fullWidth
             variant="contained"
             color="error"
-            style={{ margin: '1rem 0' }}
+            style={{ margin: '3rem 0 .5rem 0' }}
             onClick={() => logOut()}
           >
             Se déonnecter de Google
           </Button>
+        ) : (
+          <Button
+            fullWidth
+            variant="contained"
+            color="error"
+            style={{ margin: '3rem 0 .5rem 0' }}
+            onClick={(event) => handleLogout(event)}
+          >
+            Se déconnecter
+          </Button>
+        )}
+
+      </Container>
+      <Modal open={modalOpen && stripePromise && clientSecret} onClose={() => setModalOpen(false)}>
+        <Box style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Elements stripe={stripePromise} options={{ clientSecret }}>
+            <Paiement setModalOpen={setModalOpen} />
+          </Elements>
         </Box>
-      )}
-      <Box mt={2} p={2} borderTop={1} borderColor="divider">
-        <Button
-          fullWidth
-          variant="contained"
-          color="error"
-          style={{ margin: '1rem 0' }}
-          onClick={(event) => handleLogout(event)}
-        >
-          Se déconnecter
-        </Button>
-      </Box>
-    </Container>
+      </Modal>
+    </>
   );
 }

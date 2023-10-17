@@ -21,10 +21,10 @@ function reducer(state = initialState, action) {
         ...state,
         refresh_token: action.refresh_token,
       }
-    case 'SET_PREMIUM' :
+    case 'SET_NO_ADS' :
       return {
         ...state,
-        premium: action.premium
+        no_ads: action.no_ads
       }
     case 'SET_USER' : 
       return {

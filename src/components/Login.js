@@ -51,7 +51,7 @@ export default function Login({ setIndex, setOpen }) {
         });
         dispatch({
           type: 'SET_PREMIUM',
-          premium: data.premium
+          premium: data.no_ads
         })
         if (stayLoggedIn) {
           dispatch({
@@ -92,7 +92,7 @@ export default function Login({ setIndex, setOpen }) {
             const userData = await userInfoResponse.json();
 
             // Effectuez la deuxième requête pour enregistrer les informations de l'utilisateur sur le backend
-            const response = await fetch('${process.env.REACT_APP_URI/google/register', {
+            const response = await fetch(`${process.env.REACT_APP_URI}/google/register`, {
               method: 'POST',
               headers: {
                 Authorization: `Bearer ${user.access_token}`,
@@ -119,6 +119,7 @@ export default function Login({ setIndex, setOpen }) {
                 payload: data.token
               })
               setOpen(false);
+              setIndex(2)
             } else {
               console.error('Failed to register user');
             }
@@ -132,7 +133,7 @@ export default function Login({ setIndex, setOpen }) {
     };
 
     fetchData();
-  }, [user, setOpen, dispatch]);
+  }, [user, setOpen, dispatch, setIndex]);
 
 
   return (
