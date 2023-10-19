@@ -3,12 +3,12 @@ import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
 import { useState } from "react";
 import '../style/PremiumButton.css'
 import CloseIcon from '@mui/icons-material/Close';
+import { toast } from "sonner";
 
 export default function Paiement({ setModalOpen }) {
   const stripe = useStripe();
   const elements = useElements();
 
-  const [message, setMessage] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleSubmit = async (event) => {
@@ -20,20 +20,24 @@ export default function Paiement({ setModalOpen }) {
     }
     setIsProcessing(true);
 
-    const {error} = await stripe.confirmPayment({
+    const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: 'http://localhost:3000',
-      }
+      },
+      redirect: 'if_required'
     });
 
     if (error) {
-      setMessage(error.message);
+      toast.error(error.message, {
+        position: 'bottom-center'
+      });
     } else {
+      toast.success('Paiement effectué', {
+        position: 'bottom-center'
+      })
       setModalOpen(false)
+      setIsProcessing(false);
     }
-
-    setIsProcessing(false);
   }
 
   return (
@@ -52,8 +56,6 @@ export default function Paiement({ setModalOpen }) {
           </span>
         </Button>
       </div>
-
-      {message && <div>{message}</div>}
     </form>
   )
 }

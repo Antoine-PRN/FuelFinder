@@ -10,9 +10,6 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={Store}>
     <React.StrictMode>
-      {/* <head>
-        {linkElement}
-      </head> */}
       <App />
     </React.StrictMode>
   </Provider>
