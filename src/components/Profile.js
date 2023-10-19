@@ -13,7 +13,6 @@ export default function Profile() {
   const authenticated = useSelector(state => state.store.token);
   const googleProfile = useSelector(state => state.store.profile)
   const no_ads = useSelector(state => state.store.no_ads);
-  console.log(no_ads);
 
   const components = [
     <Login setIndex={setIndex} setOpen={setOpen} />,

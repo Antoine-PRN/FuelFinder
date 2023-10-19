@@ -7,16 +7,15 @@ import {
   Container,
   Avatar,
   ClickAwayListener,
-  Checkbox,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'sonner'
+import GoogleIcon from '@mui/icons-material/Google';
 
 export default function Login({ setIndex, setOpen }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [stayLoggedIn, setStayLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const dispatch = useDispatch();
 
@@ -47,7 +46,6 @@ export default function Login({ setIndex, setOpen }) {
         body: JSON.stringify({
           email,
           password,
-          stayLoggedIn,
         }),
       });
       const data = await response.json();
@@ -61,12 +59,7 @@ export default function Login({ setIndex, setOpen }) {
           type: 'SET_PREMIUM',
           premium: data.no_ads
         })
-        if (stayLoggedIn) {
-          dispatch({
-            type: 'SET_REFRESH_TOKEN',
-            refresh_token: data.refreshToken,
-          });
-        }
+        
 
         setOpen(false);
         toast.success('Connection reussie', {
@@ -197,13 +190,7 @@ export default function Login({ setIndex, setOpen }) {
                   onChange={handleInputChange}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <Checkbox
-                  checked={stayLoggedIn}
-                  onChange={() => setStayLoggedIn(!stayLoggedIn)}
-                />
-                Rester connecté ?
-              </Grid>
+              
             </Grid>
             <Grid item xs={12}>
               <Button
@@ -211,7 +198,7 @@ export default function Login({ setIndex, setOpen }) {
                 fullWidth
                 variant="contained"
                 color="primary"
-                style={{ margin: '1rem 0 0 0' }}
+                style={{ margin: '1rem 0 0 0', color: 'black' }}
                 onClick={(event) => handleSubmit(event)}
               >
                 Se connecter
@@ -220,15 +207,15 @@ export default function Login({ setIndex, setOpen }) {
                 fullWidth
                 variant="contained"
                 color="primary"
-                style={{ margin: '1rem 0' }}
+                style={{ margin: '1rem 0', display: 'flex', alignItems: 'center' }}
                 onClick={() => login()}
               >
-                Connexion avec Google
+                <span style={{ display: 'flex', alignItems: 'center' }}>
+                  <GoogleIcon style={{ marginRight: '1rem' }} /> {/* Marge entre l'icône et le texte */}
+                  Connexion avec Google
+                </span>
               </Button>
             </Grid>
-            <Typography variant="caption" style={{ margin: '0 0 1rem 0' }}>
-              * Vous resterez connecté pendant 30 jours
-            </Typography>
           </form>
         </div>
       </ClickAwayListener>

@@ -65,6 +65,10 @@ export default function ProfileData({ setOpen, setIndex }) {
       type: 'SET_AUTHENTICATED',
       payload: null
     });
+    dispatch({
+      type: 'SET_NO_ADS',
+      no_ads: null
+    })
     setIndex(0);
     toast.success('Déconnection réussie', {
       position: 'bottom-center'
@@ -76,6 +80,10 @@ export default function ProfileData({ setOpen, setIndex }) {
     dispatch({
       type: 'SET_AUTHENTICATED',
       payload: null
+    })
+    dispatch({
+      type: 'SET_NO_ADS',
+      no_ads: null
     })
     setIndex(0)
     toast.success('Déconnection réussie', {

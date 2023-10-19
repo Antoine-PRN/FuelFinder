@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { toast } from "sonner";
 
 export default function Register({ setIndex, setOpen }) {
 
@@ -23,7 +24,6 @@ export default function Register({ setIndex, setOpen }) {
     confirmPassword: '',
   });
 
-  const [errorMessage, setErrorMessage] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmationPassword, setShowConfirmationPassword] = useState(false);
 
@@ -37,10 +37,19 @@ export default function Register({ setIndex, setOpen }) {
 
   async function handleSubmit(event) {
     event.preventDefault();
+
+    if (!formData.firstname || !formData.lastname || !formData.email || !formData.password || !formData.confirmPassword) {
+      toast.error("Veuillez remplir tous les champs.", {
+        position: 'bottom-center'
+      });
+      return;
+    };
     // Password confirmation 
     if (formData.password !== formData.confirmPassword) {
-      setErrorMessage("Les mots de passe ne correspondent pas."); // Définissez le message d'erreur
-      return; // Arrêtez le traitement du formulaire
+      toast.error("Les mots de passe ne correspondent pas.", {
+        position: 'bottom-center'
+      }); 
+      return;
     };
 
     try {
@@ -58,9 +67,19 @@ export default function Register({ setIndex, setOpen }) {
       });
       if (response.status === 201) {
         setIndex(0);
+        toast.success('Compte créé avec succès', {
+          position: 'bottom-center'
+        })
+      }
+      if (response.status === 400) {
+        toast.error("Informations d'identification non valides", {
+          position: 'bottom-center'
+        })
       }
       if (response.status === 409) {
-        setErrorMessage('Addresse mail déjà utilisée');
+        toast.error('Addresse mail déjà utilisée', {
+          position: 'bottom-center'
+        });
       }
     } catch (err) {
       return;
@@ -136,7 +155,6 @@ export default function Register({ setIndex, setOpen }) {
                   id="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={errorMessage ? "red-text-field" : ""}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -153,7 +171,6 @@ export default function Register({ setIndex, setOpen }) {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  color={errorMessage && 'error'}
                   variant="outlined"
                   required
                   fullWidth
@@ -163,7 +180,6 @@ export default function Register({ setIndex, setOpen }) {
                   id="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className={errorMessage ? "red-text-field" : ""}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -179,11 +195,6 @@ export default function Register({ setIndex, setOpen }) {
                 />
               </Grid>
             </Grid>
-            {errorMessage && (
-              <Typography variant="body2" color="error">
-                {errorMessage}
-              </Typography>
-            )}
             <Button
               type="submit"
               fullWidth
