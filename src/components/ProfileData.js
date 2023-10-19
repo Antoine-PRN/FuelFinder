@@ -25,6 +25,7 @@ export default function ProfileData({ setOpen, setIndex }) {
 
   const token = useSelector((state) => state.store.token);
   const googleAuth = useSelector((state) => state.store.profile);
+  const no_ads = useSelector((state) => state.store.no_ads);
 
   const dispatch = useDispatch()
 
@@ -51,10 +52,6 @@ export default function ProfileData({ setOpen, setIndex }) {
         const client_secret = data.clientSecret;
         setClientSecret(client_secret);
       })
-      .catch(error => {
-        console.error('Error fetching client_secret:', error);
-        // Handle errors here, e.g., display an error message to the user
-      });
   }, [stripePromise]);
 
 
@@ -69,6 +66,9 @@ export default function ProfileData({ setOpen, setIndex }) {
       payload: null
     });
     setIndex(0);
+    toast.success('Déconnection réussie', {
+      position: 'bottom-center'
+    })
   };
 
   function handleLogout(event) {
@@ -78,6 +78,9 @@ export default function ProfileData({ setOpen, setIndex }) {
       payload: null
     })
     setIndex(0)
+    toast.success('Déconnection réussie', {
+      position: 'bottom-center'
+    })
   }
 
   useEffect(() => {
@@ -126,16 +129,13 @@ export default function ProfileData({ setOpen, setIndex }) {
               </IconButton>
             </Box>
           </Grid>
-          <Grid item>
-            <button className="button" onClick={() => stripePromise && clientSecret && setModalOpen(true)}>
-              Supprimer les pubs
-            </button>
-            {/* {stripePromise && clientSecret && (
-              <Elements stripe={stripePromise} options={{ clientSecret }}>
-                <Paiement />
-              </Elements>
-            )} */}
-          </Grid>
+          {no_ads === undefined && (
+            <Grid item>
+              <button className="button" onClick={() => stripePromise && clientSecret && setModalOpen(true)}>
+                Supprimer les pubs
+              </button>
+            </Grid>
+          )}
         </Grid>
 
         {googleAuth ? (
@@ -154,7 +154,7 @@ export default function ProfileData({ setOpen, setIndex }) {
             variant="contained"
             color="error"
             style={{ margin: '3rem 0 .5rem 0' }}
-            onClick={(event) => {handleLogout(event); toast.success('Déconnection réussie', {position: 'bottom-left'})}}
+            onClick={(event) => { handleLogout(event); toast.success('Déconnection réussie', { position: 'bottom-left' }) }}
           >
             Se déconnecter
           </Button>

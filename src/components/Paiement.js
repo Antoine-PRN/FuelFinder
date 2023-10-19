@@ -4,10 +4,12 @@ import { useState } from "react";
 import '../style/PremiumButton.css'
 import CloseIcon from '@mui/icons-material/Close';
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
 
 export default function Paiement({ setModalOpen }) {
   const stripe = useStripe();
   const elements = useElements();
+  const dispatch = useDispatch();
 
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -34,6 +36,10 @@ export default function Paiement({ setModalOpen }) {
     } else {
       toast.success('Paiement effectué', {
         position: 'bottom-center'
+      })
+      dispatch({
+        type: 'SET_NO_ADS',
+        no_ads: true
       })
       setModalOpen(false)
       setIsProcessing(false);
