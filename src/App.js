@@ -11,6 +11,7 @@ import { Box } from "@mui/material";
 import Profile from "./components/Profile";
 import Cookies from "js-cookie";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { Toaster } from "sonner";
 
 export default function App() {
 
@@ -79,6 +80,7 @@ export default function App() {
   return (
     loaded ? (
       <div className="App">
+        <Toaster richColors={true} />
         <div
           style={{
             position: 'absolute',

@@ -15,12 +15,12 @@ import '../style/PremiumButton.css'
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js'
 import Paiement from './Paiement';
+import { toast } from 'sonner'
 
 export default function ProfileData({ setOpen, setIndex }) {
   const [userData, setUserData] = useState({});
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState(null);
-  const [showCard, setShowCard] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
   const token = useSelector((state) => state.store.token);
@@ -146,7 +146,7 @@ export default function ProfileData({ setOpen, setIndex }) {
             style={{ margin: '3rem 0 .5rem 0' }}
             onClick={() => logOut()}
           >
-            Se déonnecter de Google
+            Se déconnecter de Google
           </Button>
         ) : (
           <Button
@@ -154,7 +154,7 @@ export default function ProfileData({ setOpen, setIndex }) {
             variant="contained"
             color="error"
             style={{ margin: '3rem 0 .5rem 0' }}
-            onClick={(event) => handleLogout(event)}
+            onClick={(event) => {handleLogout(event); toast.success('Déconnection réussie', {position: 'bottom-left'})}}
           >
             Se déconnecter
           </Button>

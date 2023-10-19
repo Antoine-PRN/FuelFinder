@@ -27,8 +27,6 @@ export default function Paiement({ setModalOpen }) {
       }
     });
 
-    console.log('validé')
-
     if (error) {
       setMessage(error.message);
     } else {

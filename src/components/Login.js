@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { useGoogleLogin } from '@react-oauth/google';
+import { toast } from 'sonner'
 
 export default function Login({ setIndex, setOpen }) {
   const [email, setEmail] = useState('');
@@ -30,6 +31,13 @@ export default function Login({ setIndex, setOpen }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!email || !password) {
+      toast.error('Veuillez remplir tous les champs', {
+        position: 'bottom-left'
+      });
+      return;
+    }
+
     try {
       const response = await fetch(`${process.env.REACT_APP_URI}/user/login`, {
         method: 'POST',
@@ -59,21 +67,34 @@ export default function Login({ setIndex, setOpen }) {
             refresh_token: data.refreshToken,
           });
         }
-        setOpen(false)
+
+        setOpen(false);
+        toast.success('Connection reussie', {
+          position: 'bottom-left'
+        });
         return data;
       }
-      setOpen(false);
+      if (response.status === 404) {
+        toast.error('Erreur lors de la connection', {
+          position: 'bottom-left',
+        })
+      }
     } catch (err) {
-      console.error(err);
+      toast.error('Ereur de connection au serveur')
     }
   };
 
   const login = useGoogleLogin({
-    onSuccess: (codeResponse) => setUser(codeResponse),
-    onError: (error) => console.log('Login Failed:', error)
+    onSuccess: (codeResponse) => {
+      setUser(codeResponse);
+      toast.success('Connection réussie', {
+        position: 'bottom-left'
+      })
+    },
+    onError: () => toast.error('Erreur de connection', {
+      position: 'bottom-left'
+    })
   });
-
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -186,6 +207,16 @@ export default function Login({ setIndex, setOpen }) {
             </Grid>
             <Grid item xs={12}>
               <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                style={{ margin: '1rem 0 0 0' }}
+                onClick={(event) => handleSubmit(event)}
+              >
+                Se connecter
+              </Button>
+              <Button
                 fullWidth
                 variant="contained"
                 color="primary"
@@ -195,16 +226,6 @@ export default function Login({ setIndex, setOpen }) {
                 Connexion avec Google
               </Button>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              style={{ margin: '1rem 0' }}
-              onClick={(event) => handleSubmit(event)}
-            >
-              Se connecter
-            </Button>
             <Typography variant="caption" style={{ margin: '0 0 1rem 0' }}>
               * Vous resterez connecté pendant 30 jours
             </Typography>
