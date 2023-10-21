@@ -8,11 +8,11 @@ import {
   Avatar,
   IconButton,
   InputAdornment,
-  ClickAwayListener,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { toast } from "sonner";
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function Register({ setIndex, setOpen }) {
 
@@ -97,7 +97,11 @@ export default function Register({ setIndex, setOpen }) {
 
   return (
     <Container component="main" maxWidth="xs" style={{ background: 'white', borderRadius: '5px' }}>
-      <ClickAwayListener onClickAway={() => setOpen(false)}>
+      <div style={{ width: '100%', height: '0', textAlign: 'end', marginLeft: '15px' }}>
+        <IconButton onClick={() => setOpen(false)}>
+          <CloseIcon />
+        </IconButton>
+      </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '1rem' }}>
           <Avatar style={{ backgroundColor: 'secondary' }}></Avatar>
           <Typography component="h1" variant="h5" style={{ marginTop: '1rem' }}>
@@ -203,12 +207,11 @@ export default function Register({ setIndex, setOpen }) {
               style={{ margin: '1rem 0 2rem 0' }}
               onClick={(event) => handleSubmit(event)}
             >
-              Se connecter
+              Créer un compte
             </Button>
 
           </form>
         </div>
-      </ClickAwayListener>
     </Container>
   );
 }

@@ -6,12 +6,13 @@ import {
   Typography,
   Container,
   Avatar,
-  ClickAwayListener,
+  IconButton,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { useGoogleLogin } from '@react-oauth/google';
 import { toast } from 'sonner'
 import GoogleIcon from '@mui/icons-material/Google';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function Login({ setIndex, setOpen }) {
   const [email, setEmail] = useState('');
@@ -32,7 +33,7 @@ export default function Login({ setIndex, setOpen }) {
     event.preventDefault();
     if (!email || !password) {
       toast.error('Veuillez remplir tous les champs', {
-        position: 'bottom-left'
+        position: 'bottom-center'
       });
       return;
     }
@@ -59,21 +60,23 @@ export default function Login({ setIndex, setOpen }) {
           type: 'SET_PREMIUM',
           premium: data.no_ads
         })
-        
+
 
         setOpen(false);
         toast.success('Connection reussie', {
-          position: 'bottom-left'
+          position: 'bottom-center'
         });
         return data;
       }
       if (response.status === 404) {
         toast.error('Erreur lors de la connection', {
-          position: 'bottom-left',
+          position: 'bottom-center',
         })
       }
     } catch (err) {
-      toast.error('Ereur de connection au serveur')
+      toast.error('Ereur de connection au serveur', {
+        position: 'bottom-center'
+      })
     }
   };
 
@@ -81,11 +84,11 @@ export default function Login({ setIndex, setOpen }) {
     onSuccess: (codeResponse) => {
       setUser(codeResponse);
       toast.success('Connection réussie', {
-        position: 'bottom-left'
+        position: 'bottom-center'
       })
     },
     onError: () => toast.error('Erreur de connection', {
-      position: 'bottom-left'
+      position: 'bottom-center'
     })
   });
 
@@ -152,73 +155,76 @@ export default function Login({ setIndex, setOpen }) {
 
   return (
     <Container component="main" maxWidth="xs" style={{ background: 'white', borderRadius: '5px' }}>
-      <ClickAwayListener onClickAway={() => setOpen(false)}>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '1rem' }}>
-          <Avatar style={{ backgroundColor: 'secondary' }}></Avatar>
-          <Typography component="h1" variant="h5" style={{ marginTop: '1rem' }}>
-            Connexion
-          </Typography>
-          <Typography style={{ fontSize: 'small' }}>
-            <Button size='small' style={{ fontSize: 'small', margin: '0.5rem 0 0 0' }} onClick={() => setIndex(1)}>
-              Vous n'avez pas de compte ? Créez en un
-            </Button>
-          </Typography>
-          <form style={{ width: '100%', marginTop: '1rem' }} onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email"
-                  name="email"
-                  value={email}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  variant="outlined"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Mot de passe"
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              
+      <div style={{ width: '100%', height: '0', textAlign: 'end', marginLeft: '15px' }}>
+        <IconButton onClick={() => setOpen(false)}>
+          <CloseIcon />
+        </IconButton>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '1rem' }}>
+        <Avatar style={{ backgroundColor: 'secondary' }}></Avatar>
+        <Typography component="h1" variant="h5" style={{ marginTop: '1rem' }}>
+          Connexion
+        </Typography>
+        <Typography style={{ fontSize: 'small' }}>
+          <Button size='small' style={{ fontSize: 'small', margin: '0.5rem 0 0 0' }} onClick={() => setIndex(1)}>
+            Vous n'avez pas de compte ? Créez en un
+          </Button>
+        </Typography>
+        <form style={{ width: '100%', marginTop: '1rem' }} onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="email"
+                label="Email"
+                name="email"
+                value={email}
+                onChange={handleInputChange}
+              />
             </Grid>
             <Grid item xs={12}>
-              <Button
-                type="submit"
+              <TextField
+                variant="outlined"
+                required
                 fullWidth
-                variant="contained"
-                color="primary"
-                style={{ margin: '1rem 0 0 0', color: 'black' }}
-                onClick={(event) => handleSubmit(event)}
-              >
-                Se connecter
-              </Button>
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                style={{ margin: '1rem 0', display: 'flex', alignItems: 'center' }}
-                onClick={() => login()}
-              >
-                <span style={{ display: 'flex', alignItems: 'center' }}>
-                  <GoogleIcon style={{ marginRight: '1rem' }} /> {/* Marge entre l'icône et le texte */}
-                  Connexion avec Google
-                </span>
-              </Button>
+                name="password"
+                label="Mot de passe"
+                type="password"
+                id="password"
+                value={password}
+                onChange={handleInputChange}
+              />
             </Grid>
-          </form>
-        </div>
-      </ClickAwayListener>
+
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              style={{ margin: '1rem 0 0 0' }}
+              onClick={(event) => handleSubmit(event)}
+            >
+              Se connecter
+            </Button>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              style={{ margin: '1rem 0 ', display: 'flex', alignItems: 'center' }}
+              onClick={() => login()}
+            >
+              <span style={{ display: 'flex', alignItems: 'center' }}>
+                <GoogleIcon style={{ marginRight: '1rem' }} /> {/* Marge entre l'icône et le texte */}
+                Connexion avec Google
+              </span>
+            </Button>
+          </Grid>
+        </form>
+      </div>
     </Container>
   );
 }

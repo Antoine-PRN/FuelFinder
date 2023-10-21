@@ -88,6 +88,8 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
   function getStationIcon(index) {
     const selectedFuelPrices = fuelStationData
       .map(getSelectedFuelPrices)
+    
+      selectedFuelPrices.sort();
       
     // Si dans les 5 premiers ET différente de null
     if (index < 6 && selectedFuelPrices[index] !== 'null') {

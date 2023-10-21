@@ -6,13 +6,12 @@ import SearchIcon from '@mui/icons-material/Search';
 export default function Finder({ citiesSuggestions, updateMapCenter }) {
   const [inputValue, setInputValue] = useState('');
 
-  // Function to filter and sort city suggestions based on user input
   const filterAndSortCities = (inputValue) => {
     if (inputValue.length < 3) {
-      return ['Utiliser la localisation']; // Retourner un tableau vide si moins de 3 caractères
+      return ['Utiliser la localisation'];
     }
 
-    return  citiesSuggestions
+    return citiesSuggestions
       .filter((city) =>
         typeof inputValue === 'string' && city.toLowerCase().includes(inputValue.toLowerCase())
       )
@@ -26,11 +25,11 @@ export default function Finder({ citiesSuggestions, updateMapCenter }) {
         p: '2px 4px',
         display: 'flex',
         alignItems: 'center',
-        width: '30%',
-        maxHeight: '65px'
+        width: '30%', 
+        minWidth: '150px',
       }}
     >
-      <div style={{width: '100%'}}>
+      <div style={{ width: '100%' }}>
         <Autocomplete
           id="city-search"
           freeSolo

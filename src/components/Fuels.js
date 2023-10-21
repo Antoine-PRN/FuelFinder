@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Menu, MenuItem, Tooltip } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import CloseIcon from '@mui/icons-material/Close'; // Importez l'icône de croix
 import '../style/fuelBar.css';
 import none_icon from '../images/none_icon.png';
@@ -51,7 +51,7 @@ export default function Fuels({ setSelectedFuel, selectedFuel }) {
           {selectedFuel ? (
             <img src={selectedFuel.icon} alt={selectedFuel.name} />
           ) : (
-            anchorEl ? <CloseIcon style={{ color: 'red' }} /> : <MenuIcon style={{ color: 'black' }} />
+              anchorEl ? <CloseIcon style={{ color: 'red' }} /> : <LocalGasStationIcon style={{ color: 'black' }} />
           )}
         </Button>
       </Tooltip>

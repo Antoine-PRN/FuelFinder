@@ -16,12 +16,15 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js'
 import Paiement from './Paiement';
 import { toast } from 'sonner'
+import ProfileUpdate from "./ProfileUpdate";
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function ProfileData({ setOpen, setIndex }) {
   const [userData, setUserData] = useState({});
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [profileUpdateModalOpen, setProfileUpdateModalOpen] = useState(false);
 
   const token = useSelector((state) => state.store.token);
   const googleAuth = useSelector((state) => state.store.profile);
@@ -116,6 +119,11 @@ export default function ProfileData({ setOpen, setIndex }) {
   return (
     <>
       <Container component="main" maxWidth="xs" style={{ background: 'white', borderRadius: '5px', padding: '1rem' }}>
+        <div style={{ width: '100%', height: '0', textAlign: 'end' }}>
+          <IconButton onClick={() => setOpen(false)}>
+            <CloseIcon />
+          </IconButton>
+        </div>
         <Grid container spacing={2} direction="column">
           <Grid item>
             <Typography variant="h4">
@@ -123,24 +131,25 @@ export default function ProfileData({ setOpen, setIndex }) {
             </Typography>
           </Grid>
           <Grid item>
-            <Typography variant="caption">
-              Compte créé le: {userData.account_creation}
+            <Typography style={{ margin: '0.5rem 0' }}>
+              Adresse mail: {userData.email}
             </Typography>
+
           </Grid>
           <Grid item>
             <Box style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Typography style={{ margin: '0.5rem 0' }}>
-                Adresse mail: {userData.email}
+              <Typography variant="caption">
+                Compte créé le: {userData.account_creation}
               </Typography>
-              <IconButton>
+              <IconButton onClick={() => setProfileUpdateModalOpen(true)}>
                 <SettingsIcon size='small' />
               </IconButton>
             </Box>
           </Grid>
           {no_ads === undefined && (
             <Grid item>
-              <button className="button" onClick={() => stripePromise && clientSecret && setModalOpen(true)}>
-                Supprimer les pubs
+              <button className="button" onClick={() => stripePromise && clientSecret && setModalOpen(true)} style={{ display: 'flex', alignItems: 'center' }}>
+                Supprimer les pubs 3.99€
               </button>
             </Grid>
           )}
@@ -162,7 +171,7 @@ export default function ProfileData({ setOpen, setIndex }) {
             variant="contained"
             color="error"
             style={{ margin: '3rem 0 .5rem 0' }}
-            onClick={(event) => { handleLogout(event); toast.success('Déconnection réussie', { position: 'bottom-left' }) }}
+            onClick={(event) => { handleLogout(event); toast.success('Déconnection réussie', { position: 'bottom-center' }) }}
           >
             Se déconnecter
           </Button>
@@ -174,6 +183,12 @@ export default function ProfileData({ setOpen, setIndex }) {
           <Elements stripe={stripePromise} options={{ clientSecret }}>
             <Paiement setModalOpen={setModalOpen} />
           </Elements>
+        </Box>
+      </Modal>
+
+      <Modal open={profileUpdateModalOpen} onClose={() => setProfileUpdateModalOpen(false)}>
+        <Box style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <ProfileUpdate setProfileUpdateModalOpen={setProfileUpdateModalOpen} userData={userData} />
         </Box>
       </Modal>
     </>

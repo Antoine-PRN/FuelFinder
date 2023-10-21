@@ -22,7 +22,7 @@ export default function Profile() {
 
   return (
     <div>
-      <Badge badgeContent={no_ads && <StarIcon style={{color: 'blue' }} />}>
+      <Badge badgeContent={no_ads && <StarIcon style={{ color: 'blue' }} />}>
         <Button
           style={{ background: 'white', display: 'flex', alignItems: 'center', padding: '10px' }}
           onClick={() => {
