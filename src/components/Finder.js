@@ -21,13 +21,7 @@ export default function Finder({ citiesSuggestions, updateMapCenter }) {
   return (
     <Paper
       component="form"
-      sx={{
-        p: '2px 4px',
-        display: 'flex',
-        alignItems: 'center',
-        width: '30%', 
-        minWidth: '150px',
-      }}
+      style={{ width: '10vw', marginLeft: '1vw', padding: '2px 4px' }}
     >
       <div style={{ width: '100%' }}>
         <Autocomplete
@@ -44,6 +38,7 @@ export default function Finder({ citiesSuggestions, updateMapCenter }) {
               sx={{ p: 1 }}
               margin="none"
               variant="standard"
+              fullWidth
               InputProps={{
                 ...params.InputProps,
                 endAdornment: (

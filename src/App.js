@@ -7,8 +7,8 @@ import "./style/legend.css"
 import { MapContainer } from "react-leaflet";
 import Fuels from "./components/Fuels";
 import Legend from "./components/Legend";
-import { Box } from "@mui/material";
-import Profile from "./components/Profile";
+import { Grid } from "@mui/material";
+import Profile from "./components/profile/Profile";
 import Cookies from "js-cookie";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Toaster } from "sonner";
@@ -81,36 +81,18 @@ export default function App() {
     loaded ? (
       <div className="App">
         <Toaster richColors={true} />
-        <div
-          style={{
-            position: 'absolute',
-            top: '1.5%',
-            left: '80px',
-            zIndex: 999,
-            width: '80%',
-          }}
-        >
-          <Finder citiesSuggestions={citiesSuggestions} updateMapCenter={updateMapCenter} />
-        </div>
-        <Box flexGrow={1} />
-        <GoogleOAuthProvider clientId={clientId}>
-          <div style={{
-            position: 'absolute',
-            top: '3%',
-            right: '20px',
-            zIndex: 999,
-          }}>
-            <Profile />
-          </div>
-        </GoogleOAuthProvider>
-        <div style={{
-          position: 'absolute',
-          top: '1.5%',
-          left: '12px',
-          zIndex: 999,
-        }}>
-          <Fuels setSelectedFuel={setSelectedFuel} selectedFuel={selectedFuel} />
-        </div>
+        <Grid container spacing={3} style={{ padding: '1em' }}>
+          <Grid item xs={4} style={{ display: 'flex', alignItems: 'center' }}>
+            <Fuels setSelectedFuel={setSelectedFuel} selectedFuel={selectedFuel} />
+            <Finder citiesSuggestions={citiesSuggestions} updateMapCenter={updateMapCenter} />
+          </Grid>
+          <Grid item xs={4} />
+          <Grid item xs={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <GoogleOAuthProvider clientId={clientId}>
+              <Profile />
+            </GoogleOAuthProvider>
+          </Grid>
+        </Grid>
         <div className="legend">
           <Legend selectedFuel={selectedFuel} />
         </div>

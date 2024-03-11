@@ -11,10 +11,7 @@ import {
 } from "@mui/material";
 import SettingsIcon from '@mui/icons-material/Settings';
 import { googleLogout } from "@react-oauth/google";
-import '../style/PremiumButton.css'
 import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js'
-import Paiement from './Paiement';
 import { toast } from 'sonner'
 import ProfileUpdate from "./ProfileUpdate";
 import CloseIcon from '@mui/icons-material/Close';
@@ -178,13 +175,6 @@ export default function ProfileData({ setOpen, setIndex }) {
         )}
 
       </Container>
-      <Modal open={modalOpen && stripePromise && clientSecret} onClose={() => setModalOpen(false)}>
-        <Box style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Elements stripe={stripePromise} options={{ clientSecret }}>
-            <Paiement setModalOpen={setModalOpen} />
-          </Elements>
-        </Box>
-      </Modal>
 
       <Modal open={profileUpdateModalOpen} onClose={() => setProfileUpdateModalOpen(false)}>
         <Box style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
