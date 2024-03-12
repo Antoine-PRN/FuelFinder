@@ -22,22 +22,20 @@ export default function Profile() {
 
   return (
     <div>
-      <Badge badgeContent={no_ads && <StarIcon style={{ color: 'blue' }} />}>
-        <Button
-          style={{ background: 'white', display: 'flex', alignItems: 'center', padding: '10px' }}
-          onClick={() => {
-            (authenticated || googleProfile) && setIndex(2);
-            setOpen(true);
-          }}
-        >
-          <PersonIcon />
-          {authenticated || googleProfile ? (
-            <span className="text" color='primary'>Profil</span>
-          ) : (
-            <span className="text">Se connecter</span>
-          )}
-        </Button>
-      </Badge>
+      <Button
+        style={{ background: 'white', display: 'flex', alignItems: 'center', padding: '10px', height: '100%' }}
+        onClick={() => {
+          (authenticated || googleProfile) && setIndex(2);
+          setOpen(true);
+        }}
+      >
+        <PersonIcon />
+        {authenticated || googleProfile ? (
+          <span className="text" color='primary'>Profil</span>
+        ) : (
+          <span className="text">Se connecter</span>
+        )}
+      </Button>
 
 
       <Modal open={open} onClose={() => setOpen(false)} >
@@ -47,7 +45,7 @@ export default function Profile() {
       </Modal>
 
       <style jsx>{`
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
           .text {
             display: none;
           }

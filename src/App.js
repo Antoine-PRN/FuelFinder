@@ -12,6 +12,7 @@ import Profile from "./components/profile/Profile";
 import Cookies from "js-cookie";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Toaster } from "sonner";
+import Loader from "./Loader";
 
 export default function App() {
 
@@ -62,7 +63,8 @@ export default function App() {
     fetchUserLocation();
   }, []);
 
-  async function updateMapCenter(selection) {
+  async function updateMapCenter(event, selection) {
+    event.preventDefault();
     try {
       if (selection === 'Utiliser la localisation') {
         setMapCenter(userLocation);
@@ -81,13 +83,12 @@ export default function App() {
     loaded ? (
       <div className="App">
         <Toaster richColors={true} />
-        <Grid container spacing={3} style={{ padding: '1em' }}>
-          <Grid item xs={4} style={{ display: 'flex', alignItems: 'center' }}>
+        <Grid container spacing={3} style={{ padding: '1em', position: 'absolute', top: 0, left: 0, zIndex: 999 }}>
+          <Grid item xl={6} md={8} xs={11}  style={{ display: 'flex', alignItems: 'center' }}>
             <Fuels setSelectedFuel={setSelectedFuel} selectedFuel={selectedFuel} />
             <Finder citiesSuggestions={citiesSuggestions} updateMapCenter={updateMapCenter} />
           </Grid>
-          <Grid item xs={4} />
-          <Grid item xs={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Grid item xl={6} md={4} xs={1} style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <GoogleOAuthProvider clientId={clientId}>
               <Profile />
             </GoogleOAuthProvider>
@@ -105,13 +106,7 @@ export default function App() {
         </MapContainer>
       </div >
     ) : (
-      <div className="loader-container">
-        <div className="three-body">
-          <div className="three-body__dot"></div>
-          <div className="three-body__dot"></div>
-          <div className="three-body__dot"></div>
-        </div>
-      </div>
+      <Loader />
     )
   );
 }

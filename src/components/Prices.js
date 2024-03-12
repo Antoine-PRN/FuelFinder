@@ -1,10 +1,13 @@
 import { Button } from "@mui/material";
+import { BRANDS_LOGOS_IDS } from "../utils/constants";
 
 export default function Prices({ station }) {
+  console.log(BRANDS_LOGOS_IDS[station.Brand.id]);
 
   return (
     <div style={{ padding: '5px' }}>
-      <div >
+      <div>
+        <img alt={station.Brand.name} src={BRANDS_LOGOS_IDS[station.Brand.id]} />
         <h2>{station.adresse}</h2>
         {station.carburants_disponibles === null ? (
           <p style={{ fontSize: '15px' }}>Aucune disponibilité</p>

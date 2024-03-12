@@ -1,10 +1,22 @@
 import Paper from '@mui/material/Paper';
 import { Autocomplete, IconButton, TextField } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 
 export default function Finder({ citiesSuggestions, updateMapCenter }) {
   const [inputValue, setInputValue] = useState('');
+  const [paperWidth, setPaperWidth] = useState(window.innerWidth <= 900 ? '35vw' : '25vw');
+
+  const handleResize = () => {
+    setPaperWidth(window.innerWidth <= 900 ? '35vw' : '25vw');
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const filterAndSortCities = (inputValue) => {
     if (inputValue.length < 3) {
@@ -20,13 +32,14 @@ export default function Finder({ citiesSuggestions, updateMapCenter }) {
 
   return (
     <Paper
-      component="form"
-      style={{ width: '10vw', marginLeft: '1vw', padding: '2px 4px' }}
+      className='finder'
+      style={{ width: paperWidth, marginLeft: '1vw', padding: '2px 4px' }}
     >
-      <div style={{ width: '100%' }}>
+      <form style={{ width: '100%' }} onSubmit={(event) => updateMapCenter(event, inputValue)}>
         <Autocomplete
           id="city-search"
           freeSolo
+          fullWidth
           options={filterAndSortCities(inputValue)}
           onInputChange={(event, newValue) => {
             setInputValue(newValue);
@@ -34,7 +47,7 @@ export default function Finder({ citiesSuggestions, updateMapCenter }) {
           renderInput={(params) => (
             <TextField
               {...params}
-              placeholder='Chercher une ville'
+              placeholder={'Chercher une ville'}
               sx={{ p: 1 }}
               margin="none"
               variant="standard"
@@ -44,9 +57,9 @@ export default function Finder({ citiesSuggestions, updateMapCenter }) {
                 endAdornment: (
                   <IconButton
                     type="button"
-                    sx={{ p: '10px' }}
+                    sx={{ p: '10px', whiteSpace: 'nowrap' }}
                     aria-label="search"
-                    onClick={() => updateMapCenter(inputValue)}
+                    onClick={(event) => updateMapCenter(event, inputValue)}
                   >
                     <SearchIcon />
                   </IconButton>
@@ -55,7 +68,7 @@ export default function Finder({ citiesSuggestions, updateMapCenter }) {
             />
           )}
         />
-      </div>
+      </form>
     </Paper>
   );
 }

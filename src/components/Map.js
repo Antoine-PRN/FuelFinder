@@ -4,6 +4,7 @@ import { Icon } from 'leaflet';
 import { useEffect, useState } from 'react';
 import { Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 import Prices from './Prices';
+import { BRANDS_IDS } from '../utils/constants';
 
 /**
   * Render a map component with fuel station data and user location.
@@ -57,11 +58,11 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
   useEffect(() => {
     async function fetchFuelStationData() {
       try {
-        const response = await fetch(`https://api.prix-carburants.2aaz.fr/stations/around/${mapCenter[0]},${mapCenter[1]}?opendata=v2`, {
+        const response = await fetch(`https://api.prix-carburants.2aaz.fr/stations/around/${mapCenter[0]},${mapCenter[1]}?brands=${BRANDS_IDS}?opendata=v2`, {
           method: 'GET',
           headers: {
             'accept': 'application/json',
-            'Range': 'station=1-20'
+            'Range': 'station=1-20',
           }
         });
         const data = await response.json();
@@ -88,9 +89,9 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
   function getStationIcon(index) {
     const selectedFuelPrices = fuelStationData
       .map(getSelectedFuelPrices)
-    
-      selectedFuelPrices.sort();
-      
+
+    selectedFuelPrices.sort();
+
     // Si dans les 5 premiers ET différente de null
     if (index < 6 && selectedFuelPrices[index] !== 'null') {
       return goodPumpIcon;
@@ -140,7 +141,7 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
           getSelectedFuelPrices(station),
           <Marker
             key={station.id}
-            position={[parseFloat(station.geom.lat), parseFloat(station.geom.lon)]}
+            position={[parseFloat(station.Coordinates.latitude), parseFloat(station.Coordinates.longitude)]}
             icon={
               station.carburants_disponibles === null
                 ? disabledPumpIcon
