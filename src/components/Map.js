@@ -58,23 +58,24 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
   useEffect(() => {
     async function fetchFuelStationData() {
       try {
-        const response = await fetch(`https://api.prix-carburants.2aaz.fr/stations/around/${mapCenter[0]},${mapCenter[1]}?opendata=v2&brands=${BRANDS_IDS}`, {
+        // Fetch fuel station data from the API
+        const response = await fetch(`${process.env.REACT_APP_URI}/rest/fuels`, {
           method: 'GET',
           headers: {
             'accept': 'application/json',
-            'Range': 'station=1-20',
+            'latitude': mapCenter[0],
+            'longitude': mapCenter[1],
           }
         });
         const data = await response.json();
 
-        console.log(data);
         if (selectedFuel) {
-          // Sort the data based on the selected fuel price
-          data.sort((a, b) =>
-            a[`${selectedFuel.prix}`] - b[`${selectedFuel.prix}`]);
-        }
-
-        setFuelStationData(data);
+            // Sort the data based on the selected fuel price
+            data.fuels.sort((a, b) =>
+              a[`${selectedFuel.prix}`] - b[`${selectedFuel.prix}`]);
+          }
+  
+          setFuelStationData(data.fuels);
       } catch (error) {
         console.log(error);
       }

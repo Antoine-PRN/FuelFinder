@@ -53,7 +53,7 @@ export default function Register({ setIndex, setOpen }) {
     };
 
     try {
-      const response = await fetch('http://localhost:5000/user/register', {
+      const response = await fetch('http://localhost:5000/rest/user/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

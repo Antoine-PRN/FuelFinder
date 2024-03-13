@@ -12,7 +12,7 @@ export default function ProfileUpdate({ setProfileUpdateModalOpen, userData }) {
 
   async function handleMailSubmit() {
     try {
-      const response = await fetch(`${process.env.REACT_APP_URI}/user/update_email`, {
+      const response = await fetch(`${process.env.REACT_APP_URI}/rest/user/update_email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ export default function ProfileUpdate({ setProfileUpdateModalOpen, userData }) {
 
   async function handlePasswordSubmit() {
     try {
-      const response = await fetch(`${process.env.REACT_APP_URI}/user/update_password`, {
+      const response = await fetch(`${process.env.REACT_APP_URI}/rest/user/update_password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

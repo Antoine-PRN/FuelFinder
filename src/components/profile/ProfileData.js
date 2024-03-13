@@ -94,7 +94,7 @@ export default function ProfileData({ setOpen, setIndex }) {
   useEffect(() => {
     async function getUser() {
       try {
-        const response = await fetch("http://localhost:5000/user/get_user", {
+        const response = await fetch("http://localhost:5000/rest/user/get_user", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

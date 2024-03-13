@@ -39,7 +39,7 @@ export default function Login({ setIndex, setOpen }) {
     }
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_URI}/user/login`, {
+      const response = await fetch(`${process.env.REACT_APP_URI}/rest/rest/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ export default function Login({ setIndex, setOpen }) {
       try {
         if (user && user.access_token) {
           // Effectuez la première requête pour récupérer les informations de l'utilisateur
-          const userInfoResponse = await fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
+          const userInfoResponse = await fetch(`https://www.googleapis.com/oauth2/v1/rest/userinfo?access_token=${user.access_token}`, {
             method: 'GET',
             headers: {
               Authorization: `Bearer ${user.access_token}`,
@@ -109,7 +109,7 @@ export default function Login({ setIndex, setOpen }) {
             const userData = await userInfoResponse.json();
 
             // Effectuez la deuxième requête pour enregistrer les informations de l'utilisateur sur le backend
-            const response = await fetch(`${process.env.REACT_APP_URI}/google/register`, {
+            const response = await fetch(`${process.env.REACT_APP_URI}/rest/google/register`, {
               method: 'POST',
               headers: {
                 Authorization: `Bearer ${user.access_token}`,
