@@ -86,7 +86,7 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
 
     // Fetch fuel station data and sort it
     fetchFuelStationData();
-  }, [mapCenter, map, selectedFuel]);
+  }, []);
 
   function getStationIcon(index) {
     const selectedFuelPrices = fuelStationData
