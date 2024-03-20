@@ -22,46 +22,66 @@ export default function App() {
   const [userLocation, setUserLocation] = useState([]);
   const [selectedFuel, setSelectedFuel] = useState(null);
   const clientId = '520774578108-1umak1jhkcdja9c9pt9c76aoqc6ssksl.apps.googleusercontent.com'
+  const [fuelStationData, setFuelStationData] = useState([]);
 
-  useEffect(() => {
-    async function fetchUserLocation() {
+  async function fetchUserLocation() {
+    return new Promise((resolve, reject) => {
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(function (userPosition) {
           const userLat = userPosition.coords.latitude;
           const userLon = userPosition.coords.longitude;
-          setUserLocation([userLat, userLon]);
-          setMapCenter([userLat, userLon]);
+          resolve([userLat, userLon]);
         });
+      } else {
+        reject(new Error('La géolocalisation n\'est pas disponible.'));
       }
-    }
-
-    async function fetchCities() {
+    });
+  }
+  
+  async function fetchFuelStationData(userLocation) {
+    return new Promise((resolve, reject) => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_URI}/cities`);
-        const cities = await response.json();
-
-        setCitiesSuggestions(cities);
-        setLoaded(true);
-      } catch (err) {
-        console.error(err);
-        setLoaded(false)
+        // Fetch fuel station data from the API
+        fetch(`${process.env.REACT_APP_URI}/rest/fuels`, {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json',
+            'latitude': userLocation[0],
+            'longitude': userLocation[1],
+          }
+        })
+        .then(response => response.json())
+        .then(data => resolve(data))
+        .catch(error => reject(error));
+      } catch (error) {
+        reject(error);
       }
+    });
+  }
+  
+
+  async function fetchCities() {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_URI}/cities`);
+      const cities = await response.json();
+
+      setCitiesSuggestions(cities);
+    } catch (err) {
+      console.error(err);
     }
+  }
 
-    async function getGoogleData() {
-      try {
-        const google_token = Cookies.get('google_token')
-        if (google_token) {
+  async function getGoogleData() {
+    try {
+      const google_token = Cookies.get('google_token')
+      if (google_token) {
 
-        }
-      } catch (err) {
-        console.log(err)
       }
+    } catch (err) {
+      console.log(err)
     }
-    getGoogleData();
-    fetchCities();
-    fetchUserLocation();
-  }, []);
+  }
+
 
   async function updateMapCenter(event, selection) {
     event.preventDefault();
@@ -79,12 +99,44 @@ export default function App() {
     }
   }
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        // Fetch user location
+        console.log('Fetching user location...')
+        const userLocation = await fetchUserLocation();
+        setUserLocation(userLocation);
+        setMapCenter(userLocation);
+        console.log('User location fetched:', userLocation);
+        console.log('Fetching cities...')
+    
+        // Fetch cities
+        await fetchCities();
+    
+        // Fetch fuel station data
+        const fuelStationDataResponse = await fetchFuelStationData(userLocation);
+        const fuelStationData = fuelStationDataResponse.fuels; // Modification ici
+        if (selectedFuel) {
+          fuelStationData.sort((a, b) => a[selectedFuel.prix] - b[selectedFuel.prix]);
+        }
+        console.log('Fuel station data fetched:', fuelStationData);
+        setFuelStationData(fuelStationData);
+        setLoaded(true);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  
+    fetchData();
+  }, []);
+  
+
   return (
-    loaded ? (
+    loaded && fuelStationData.length > 0 ? (
       <div className="App">
         <Toaster richColors={true} />
         <Grid container spacing={3} style={{ padding: '1em', position: 'absolute', top: 0, left: 0, zIndex: 999 }}>
-          <Grid item xl={6} md={8} xs={11}  style={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xl={6} md={8} xs={11} style={{ display: 'flex', alignItems: 'center' }}>
             <Fuels setSelectedFuel={setSelectedFuel} selectedFuel={selectedFuel} />
             <Finder citiesSuggestions={citiesSuggestions} updateMapCenter={updateMapCenter} />
           </Grid>
@@ -97,13 +149,16 @@ export default function App() {
         <div className="legend">
           <Legend selectedFuel={selectedFuel} />
         </div>
-        <MapContainer center={mapCenter} zoom={13} scrollWheelZoom={true} zoomControl={false}>
-          <MapComponent
-            mapCenter={mapCenter}
-            userLocation={userLocation}
-            selectedFuel={selectedFuel}
-          />
-        </MapContainer>
+        {fuelStationData && fuelStationData.length > 0 && (
+          <MapContainer center={mapCenter} zoom={13} scrollWheelZoom={true} zoomControl={false}>
+            <MapComponent
+              mapCenter={mapCenter}
+              userLocation={userLocation}
+              selectedFuel={selectedFuel}
+              fuelsStationsData={fuelStationData}
+            />
+          </MapContainer>
+        )}
       </div >
     ) : (
       <Loader />

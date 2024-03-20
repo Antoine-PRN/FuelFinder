@@ -15,9 +15,8 @@ import { BRANDS_IDS } from '../utils/constants';
   * @param {string} props.selectedFuel - The selected fuel type (e.g., 'sp95' or 'gazole').
   * @returns {JSX.Element} - The map component.
   */
-export default function MapComponent({ mapCenter, userLocation, selectedFuel }) {
+export default function MapComponent({ mapCenter, userLocation, selectedFuel, fuelStationData }) {
   // State for fuel station data
-  const [fuelStationData, setFuelStationData] = useState([]);
 
   // Get the map instance from the useMap hook
   const map = useMap();
@@ -56,36 +55,10 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel }) 
   });
 
   useEffect(() => {
-    async function fetchFuelStationData() {
-      try {
-        // Fetch fuel station data from the API
-        const response = await fetch(`${process.env.REACT_APP_URI}/rest/fuels`, {
-          method: 'GET',
-          headers: {
-            'accept': 'application/json',
-            'latitude': mapCenter[0],
-            'longitude': mapCenter[1],
-          }
-        });
-        const data = await response.json();
-
-        if (selectedFuel) {
-            // Sort the data based on the selected fuel price
-            data.fuels.sort((a, b) =>
-              a[`${selectedFuel.prix}`] - b[`${selectedFuel.prix}`]);
-          }
-  
-          setFuelStationData(data.fuels);
-      } catch (error) {
-        console.log(error);
-      }
-    }
+    
 
     // Set the map view to the center coordinates
     map.setView(mapCenter);
-
-    // Fetch fuel station data and sort it
-    fetchFuelStationData();
   }, []);
 
   function getStationIcon(index) {
