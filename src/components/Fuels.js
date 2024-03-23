@@ -14,11 +14,11 @@ export default function Fuels({ setSelectedFuel, selectedFuel }) {
 
   const fuels = [
     { name: 'Aucun', icon: none_icon },
-    { name: 'Ethanol', icon: e85_icon, prix: 'e85_prix' },
-    { name: 'Sans plomb 95', icon: sp95_icon, prix: 'sp95_prix' },
-    { name: 'Sans plomb 95 E10', icon: sp95_e10_icon, prix: 'e10_prix' },
-    { name: 'Sans plomb 98', icon: sp98_icon, prix: 'sp98_prix' },
-    { name: 'Diesel', icon: diesel_icon, prix: 'gazole_prix' },
+    { name: 'Ethanol', icon: e85_icon, prix: 'e85_prix', value: "E85" },
+    { name: 'Sans plomb 95', icon: sp95_icon, prix: 'sp95_prix', value: "SP95" },
+    { name: 'Sans plomb 95 E10', icon: sp95_e10_icon, prix: 'e10_prix', value: "E10"},
+    { name: 'Sans plomb 98', icon: sp98_icon, prix: 'sp98_prix', value: "SP98"},
+    { name: 'Diesel', icon: diesel_icon, prix: 'gazole_prix', value: "Gazole"},
   ];
   const [anchorEl, setAnchorEl] = useState(null);
 

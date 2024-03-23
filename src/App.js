@@ -102,24 +102,17 @@ export default function App() {
   useEffect(() => {
     async function fetchData() {
       try {
-        // Fetch user location
-        console.log('Fetching user location...')
         const userLocation = await fetchUserLocation();
         setUserLocation(userLocation);
         setMapCenter(userLocation);
-        console.log('User location fetched:', userLocation);
-        console.log('Fetching cities...')
     
-        // Fetch cities
         await fetchCities();
     
-        // Fetch fuel station data
         const fuelStationDataResponse = await fetchFuelStationData(userLocation);
         const fuelStationData = fuelStationDataResponse; // Modification ici
         if (selectedFuel) {
           fuelStationData.sort((a, b) => a[selectedFuel.prix] - b[selectedFuel.prix]);
         }
-        console.log('Fuel station data fetched:', fuelStationData);
         setFuelStationData(fuelStationData);
         setLoaded(true);
       } catch (error) {

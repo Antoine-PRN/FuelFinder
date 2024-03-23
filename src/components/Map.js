@@ -16,9 +16,6 @@ import { BRANDS_IDS } from '../utils/constants';
   * @returns {JSX.Element} - The map component.
   */
 export default function MapComponent({ mapCenter, userLocation, selectedFuel, ...props }) {
-  console.log(props.fuelStationData)
-  // State for fuel station data
-
   // Get the map instance from the useMap hook
   const map = useMap();
 
@@ -56,20 +53,19 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel, ..
   });
 
   useEffect(() => {
-    
+
 
     // Set the map view to the center coordinates
     map.setView(mapCenter);
   }, []);
 
   function getStationIcon(index) {
-    const selectedFuelPrices = props.fuelStationData
-      .map(getSelectedFuelPrices)
+    const selectedFuelPrices = props.fuelStationData.map(getSelectedFuelPrices)
 
     selectedFuelPrices.sort();
 
     // Si dans les 5 premiers ET différente de null
-    if (index < 6 && selectedFuelPrices[index] !== 'null') {
+    if (index < 11 && selectedFuelPrices[index] !== 'null') {
       return goodPumpIcon;
     }
     //  Si valeur null

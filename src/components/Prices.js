@@ -1,5 +1,4 @@
 export default function Prices({ station }) {
-  console.log(station)
   return (
     <div style={{ padding: '5px' }}>
       <div>
