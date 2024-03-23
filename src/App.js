@@ -115,7 +115,7 @@ export default function App() {
     
         // Fetch fuel station data
         const fuelStationDataResponse = await fetchFuelStationData(userLocation);
-        const fuelStationData = fuelStationDataResponse.fuels; // Modification ici
+        const fuelStationData = fuelStationDataResponse; // Modification ici
         if (selectedFuel) {
           fuelStationData.sort((a, b) => a[selectedFuel.prix] - b[selectedFuel.prix]);
         }
@@ -155,7 +155,7 @@ export default function App() {
               mapCenter={mapCenter}
               userLocation={userLocation}
               selectedFuel={selectedFuel}
-              fuelsStationsData={fuelStationData}
+              fuelStationData={fuelStationData}
             />
           </MapContainer>
         )}

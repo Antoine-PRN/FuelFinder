@@ -15,7 +15,8 @@ import { BRANDS_IDS } from '../utils/constants';
   * @param {string} props.selectedFuel - The selected fuel type (e.g., 'sp95' or 'gazole').
   * @returns {JSX.Element} - The map component.
   */
-export default function MapComponent({ mapCenter, userLocation, selectedFuel, fuelStationData }) {
+export default function MapComponent({ mapCenter, userLocation, selectedFuel, ...props }) {
+  console.log(props.fuelStationData)
   // State for fuel station data
 
   // Get the map instance from the useMap hook
@@ -62,7 +63,7 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel, fu
   }, []);
 
   function getStationIcon(index) {
-    const selectedFuelPrices = fuelStationData
+    const selectedFuelPrices = props.fuelStationData
       .map(getSelectedFuelPrices)
 
     selectedFuelPrices.sort();
@@ -111,7 +112,7 @@ export default function MapComponent({ mapCenter, userLocation, selectedFuel, fu
       />
 
       {/* Render fuel station markers */}
-      {fuelStationData.map((station, index) => {
+      {props.fuelStationData.map((station, index) => {
         return (
           getSelectedFuelPrices(station),
           <Marker
